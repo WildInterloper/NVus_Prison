@@ -9,6 +9,7 @@ import me.nvus.nvus_prison_setup.Listeners.PlayerSpawn;
 import me.nvus.nvus_prison_setup.Listeners.BlockListener;
 import me.nvus.nvus_prison_setup.Listeners.ToolSwitchListener;
 import me.nvus.nvus_prison_setup.Updater.UpdateChecker;
+import me.nvus.nvus_prison_setup.Listeners.ToolDamageListener;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.ChatColor;
@@ -37,6 +38,9 @@ public final class PrisonSetup extends JavaPlugin {
         this.getCommand("nvus").setExecutor(new CommandListener(this, configManager));
         //new SettingsMenu(this, configManager);
         getServer().getPluginManager().registerEvents(new SettingsMenu(this, configManager), this);
+
+        ToolDamageListener toolDamageListener = new ToolDamageListener(configManager);
+        getServer().getPluginManager().registerEvents(toolDamageListener, this);
 
         getLogger().info(ChatColor.translateAlternateColorCodes('&',"&a&lNVus Prison Setup has been successfully enabled!"));
 

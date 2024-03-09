@@ -76,6 +76,13 @@ public class CommandListener implements CommandExecutor {
                 }
                 handleToggleConfigCommand(sender, "RestrictArmor", args[1]);
                 break;
+            case "tooldamage": // New case for toggling RestrictArmor
+                if (args.length < 2) {
+                    sender.sendMessage(ChatColor.RED + "Usage: /nvus tooldamage <true|false>");
+                    return true;
+                }
+                handleToggleConfigCommand(sender, "ToolDamage", args[1]);
+                break;
             default:
                 sender.sendMessage(ChatColor.RED + "Invalid command. Use /nvus for help.");
                 return true;

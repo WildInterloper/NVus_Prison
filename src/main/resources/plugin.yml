@@ -1,4 +1,4 @@
-name: NVus_PrisonSetup
+name: NVus_Prison
 version: '${project.version}'
 main: me.nvus.nvus_prison_setup.PrisonSetup
 api-version: '1.20'

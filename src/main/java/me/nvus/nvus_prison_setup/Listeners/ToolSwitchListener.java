@@ -10,7 +10,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ToolSwitchListener implements Listener {
@@ -22,61 +24,49 @@ public class ToolSwitchListener implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (event.getAction() != org.bukkit.event.block.Action.LEFT_CLICK_BLOCK) return;
+        if (event.getAction() != org.bukkit.event.block.Action.LEFT_CLICK_BLOCK || event.getClickedBlock() == null) return;
 
         Player player = event.getPlayer();
-        FileConfiguration mainConfig = configManager.getConfig("config.yml");
+        FileConfiguration config = configManager.getConfig("config.yml");
         FileConfiguration autoSwitchConfig = configManager.getConfig("auto_switch.yml");
 
-        if (!player.hasPermission("nvus.prisoner") || !mainConfig.getBoolean("AutoSwitch", true)) return;
+        if (!player.hasPermission("nvus.prisoner") || !config.getBoolean("AutoSwitch", true)) return;
 
         Material blockType = event.getClickedBlock().getType();
-
-        Material bestTool = determineBestTool(blockType, player, mainConfig, autoSwitchConfig);
+        Material bestTool = determineBestToolForBlock(blockType, player, config, autoSwitchConfig);
         if (bestTool != null) {
             switchToTool(player, bestTool);
         }
     }
 
-    private Material determineBestTool(Material blockType, Player player, FileConfiguration mainConfig, FileConfiguration autoSwitchConfig) {
-        List<String> prisonTools = mainConfig.getStringList("PrisonerTools");
+    private Material determineBestToolForBlock(Material blockType, Player player, FileConfiguration config, FileConfiguration autoSwitchConfig) {
+        List<Material> prisonerTools = config.getStringList("PrisonerTools").stream()
+                .map(Material::valueOf)
+                .collect(Collectors.toList());
 
-        // Fetch block materials for tools from auto_switch.yml
-        List<Material> pickaxeMaterials = convertStringListToMaterial(autoSwitchConfig.getStringList("PickaxeMaterials"));
-        List<Material> axeMaterials = convertStringListToMaterial(autoSwitchConfig.getStringList("AxeMaterials"));
-        List<Material> shovelMaterials = convertStringListToMaterial(autoSwitchConfig.getStringList("ShovelMaterials"));
 
-        Material requiredTool = getRequiredToolForBlock(blockType, pickaxeMaterials, axeMaterials, shovelMaterials);
+        Map<Material, List<Material>> toolEffectivenessMap = new HashMap<>();
+        for (Material tool : prisonerTools) {
 
-        if (requiredTool != null && prisonTools.contains(requiredTool.toString())) {
-            return findBestToolInInventory(requiredTool, player);
+            if (tool.toString().endsWith("_PICKAXE")) {
+                toolEffectivenessMap.put(tool, convertStringListToMaterial(autoSwitchConfig.getStringList("PickaxeMaterials")));
+            } else if (tool.toString().endsWith("_AXE")) {
+                toolEffectivenessMap.put(tool, convertStringListToMaterial(autoSwitchConfig.getStringList("AxeMaterials")));
+            } else if (tool.toString().endsWith("_SHOVEL")) {
+                toolEffectivenessMap.put(tool, convertStringListToMaterial(autoSwitchConfig.getStringList("ShovelMaterials")));
+            }
         }
 
-        return null;
-    }
-
-    private Material getRequiredToolForBlock(Material blockType, List<Material> pickaxeMaterials, List<Material> axeMaterials, List<Material> shovelMaterials) {
-        if (pickaxeMaterials.contains(blockType)) {
-            return Material.IRON_PICKAXE;
-        } else if (axeMaterials.contains(blockType)) {
-            return Material.IRON_AXE;
-        } else if (shovelMaterials.contains(blockType)) {
-            return Material.IRON_SHOVEL;
+        for (Material tool : prisonerTools) {
+            List<Material> effectiveBlocks = toolEffectivenessMap.getOrDefault(tool, List.of());
+            if (effectiveBlocks.contains(blockType) && player.getInventory().contains(tool)) {
+                return tool;
+            }
         }
-        return null;
+
+        return null; // No suitable tool found
     }
 
-    private Material findBestToolInInventory(Material toolType, Player player) {
-        PlayerInventory inventory = player.getInventory();
-        return inventory.all(toolType).values().stream()
-                .findFirst()
-                .map(ItemStack::getType)
-                .orElse(null);
-    }
-
-    private List<Material> convertStringListToMaterial(List<String> stringList) {
-        return stringList.stream().map(Material::valueOf).collect(Collectors.toList());
-    }
 
     private void switchToTool(Player player, Material tool) {
         PlayerInventory inventory = player.getInventory();
@@ -84,5 +74,9 @@ public class ToolSwitchListener implements Listener {
         if (toolSlot >= 0 && toolSlot < 9) { // If the tool is in the quickbar
             inventory.setHeldItemSlot(toolSlot);
         }
+    }
+
+    private List<Material> convertStringListToMaterial(List<String> stringList) {
+        return stringList.stream().map(Material::valueOf).collect(Collectors.toList());
     }
 }

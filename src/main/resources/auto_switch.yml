@@ -1,0 +1,57 @@
+#======================================================================================#
+#                                NVus PRISON SETUP                                     #
+#                                   by never2nv                                        #
+#                                www.FNGnation.net                                     #
+#                          Discord: FNGnation.net/discord                              #
+#======================================================================================#
+
+# What blocks/ores should cause the prisoner to auto switch to a pickaxe?
+PickaxeMaterials:
+  - STONE
+  - COBBLESTONE
+  - ANDESITE
+  - DIORITE
+  - GRANITE
+  - NETHERRACK
+  - END_STONE
+  - SANDSTONE
+  - RED_SANDSTONE
+  - OBSIDIAN
+# Here's all the ORES that will trigger switching to a piacke:
+  - COAL_ORE
+  - IRON_ORE
+  - GOLD_ORE
+  - DIAMOND_ORE
+  - LAPIS_ORE
+  - REDSTONE_ORE
+  - EMERALD_ORE
+  - NETHER_QUARTZ_ORE
+  - ANCIENT_DEBRIS
+
+# What blocks should cause the prisoner to auto switch to an axe?
+AxeMaterials:
+  - OAK_LOG
+  - OAK_PLANKS
+  - BIRCH_LOG
+  - BIRCH_PLANKS
+  - SPRUCE_LOG
+  - SPRUCE_PLANKS
+  - JUNGLE_LOG
+  - JUNGLE_PLANKS
+  - ACACIA_LOG
+  - ACACIA_PLANKS
+  - DARK_OAK_LOG
+  - DARK_OAK_PLANKS
+
+# What blocks should cause the prisoner to auto switch to a shovel?
+ShovelMaterials:
+  - GRASS_BLOCK
+  - DIRT
+  - COARSE_DIRT
+  - PODZOL
+  - SAND
+  - RED_SAND
+  - GRAVEL
+  - CLAY
+  - SNOW
+  - SNOW_BLOCK

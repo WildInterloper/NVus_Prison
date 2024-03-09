@@ -1,0 +1,14 @@
+#======================================================================================#
+#                                NVus PRISON SETUP                                     #
+#                                   by never2nv                                        #
+#                                www.FNGnation.net                                     #
+#                          Discord: FNGnation.net/discord                              #
+#======================================================================================#
+
+
+# Place Item(s) here that prisoners should never be able to equip in their hands or move into their quickbar
+# Remember to give all prisoner ranks/groups the permission ' nvus.prisoner ' and negate that permission for any
+# players that are not or no longer considered a prisoner.
+BannedItems:
+  - DIAMOND_PICKAXE
+  - NETHERITE_PICKAXE

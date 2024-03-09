@@ -1,0 +1,23 @@
+name: NVus_PrisonSetup
+version: '${project.version}'
+main: me.nvus.nvus_prison_setup.PrisonSetup
+api-version: '1.20'
+prefix: NVus Prison
+authors: [never2nv]
+website: https://FNGnation.net
+
+depends:
+  - WorldGuard
+
+commands:
+  nvus:
+    description: Base command to view NVus Prison Setup commands.
+    usage: |
+      /nvus reload - Reloads all configuration files.
+      /nvus version - Shows the plugin version.
+      /nvus menu - Opens the settings menu (player only).
+      /nvus autopickup <true|false> - Toggles the auto item pickup feature.
+      /nvus autoswitch <true|false> - Toggles the auto tool switch feature.
+      /nvus prisonerarmor <true|false> - Toggles giving prisoners armor on join.
+      /nvus restrictarmor <true|false> - Toggles the restriction on changing prisoner armor.
+    aliases: [nvusmenu]

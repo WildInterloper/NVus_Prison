@@ -1,0 +1,31 @@
+#======================================================================================#
+#                                NVus PRISON SETUP                                     #
+#                                   by never2nv                                        #
+#                                www.FNGnation.net                                     #
+#                          Discord: FNGnation.net/discord                              #
+#======================================================================================#
+# Remember to give prisoner ranks/groups the permission ' nvus.prisoner ' and negate that permission for any
+# players that are not or no longer considered a prisoner.
+
+# Should prisoners auto pickup blocks they have mined?
+# Use /nvus autopickup true|false to toggle this in-game! (Requires permission: nvus.admin)
+# DO NOT TURN THIS ON WHEN RUNNING THIS PLUGIN ON A LIVE/PRODUCTION SERVER! There may be bugs!
+AutoPickup: false
+# Should prisoners be able to auto switch to the correct tool for whatever they are mining?
+#i.e. If hitting dirt/clay with a pickaxe, they will auto switch to a shovel (if in their quickbar)
+# Use /nvus autoswitch true|false to toggle this in-game! (Requires permission: nvus.admin)
+AutoSwitch: true
+
+# Should prisoners be given a default prisoner armor set (orange leather armor) when they join the server?
+PrisonerArmor: true
+# Should prisoners be able to remove/change their default prisoner armor?
+RestrictArmor: true
+
+# What tools are considered Prisoner Tools? These are used for the ToolDamage toggle and for auto switching feature!
+# See auto_switch.yml to set up which blocks trigger the auto switch to these tools.
+PrisonerTools:
+  - IRON_PICKAXE
+  - IRON_AXE
+  - IRON_SHOVEL
+# When set to FALSE it will prevent Prisoner Tools from receiving damage when mining etc.
+ToolDamage: false

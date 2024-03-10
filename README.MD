@@ -41,3 +41,10 @@ Currently, the plugin implements the following features, so far:
 
 [Documentation](https://www.spigotmc.org/resources/nvus-prison-lite.115441/field?field=documentation)
 
+## Upcoming Features:
+ - [X]  GUI Menu
+ - [X]  Toggle Prisoner Tool Damage
+ - [ ]  Prison Gangs
+ - [ ]  Additional Gang Commands (kick, promote, disband)
+ - [ ]  Tree Farm
+

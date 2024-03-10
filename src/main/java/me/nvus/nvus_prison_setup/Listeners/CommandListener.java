@@ -109,4 +109,5 @@ public class CommandListener implements CommandExecutor {
         configManager.saveConfig("config.yml");
         sender.sendMessage(ChatColor.GREEN + key + " set to " + boolValue + ".");
     }
+
 }

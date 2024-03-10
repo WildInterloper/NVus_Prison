@@ -31,14 +31,15 @@ public class SettingsMenu implements Listener {
     }
 
     public void openSettingsMenu(Player player) {
-        Inventory inv = Bukkit.createInventory(null, 9, ChatColor.DARK_GREEN + "Settings Menu");
+        Inventory inv = Bukkit.createInventory(null, 9, ChatColor.DARK_GREEN + "NVus Prison Settings");
         FileConfiguration config = configManager.getConfig("config.yml");
 
+        // Adjust the items to be spaced out and include ToolDamage toggle
         inv.setItem(0, createToggleItem(Material.LEATHER_CHESTPLATE, "Toggle PrisonerArmor", config.getBoolean("PrisonerArmor", false)));
-        inv.setItem(1, createToggleItem(Material.IRON_DOOR, "Toggle RestrictArmor", config.getBoolean("RestrictArmor", false)));
-        inv.setItem(3, createToggleItem(Material.HOPPER, "Toggle AutoPickup", config.getBoolean("AutoPickup", false)));
-        inv.setItem(4, createToggleItem(Material.LEVER, "Toggle AutoSwitch", config.getBoolean("AutoSwitch", false)));
-        inv.setItem(7, createItem(Material.BOOK, ChatColor.GREEN + "Reload Configs"));
+        inv.setItem(2, createToggleItem(Material.IRON_DOOR, "Toggle RestrictArmor", config.getBoolean("RestrictArmor", false)));
+        inv.setItem(4, createToggleItem(Material.HOPPER, "Toggle AutoPickup", config.getBoolean("AutoPickup", false)));
+        inv.setItem(6, createToggleItem(Material.LEVER, "Toggle AutoSwitch", config.getBoolean("AutoSwitch", false)));
+        inv.setItem(8, createToggleItem(Material.IRON_PICKAXE, "Toggle ToolDamage", config.getBoolean("ToolDamage", true)));
 
         player.openInventory(inv);
     }
@@ -51,17 +52,18 @@ public class SettingsMenu implements Listener {
         return item;
     }
 
-    private ItemStack createItem(Material material, String name) {
-        ItemStack item = new ItemStack(material);
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(name);
-        item.setItemMeta(meta);
-        return item;
-    }
+//    private ItemStack createItem(Material material, String name) {
+//        ItemStack item = new ItemStack(material);
+//        ItemMeta meta = item.getItemMeta();
+//        meta.setDisplayName(name);
+//        item.setItemMeta(meta);
+//        return item;
+//    }
+
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        if (!event.getView().getTitle().equals(ChatColor.DARK_GREEN + "Settings Menu")) return;
+        if (!event.getView().getTitle().equals(ChatColor.DARK_GREEN + "NVus Prison Settings")) return;
         event.setCancelled(true);
 
         Player player = (Player) event.getWhoClicked();

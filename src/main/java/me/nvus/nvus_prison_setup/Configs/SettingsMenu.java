@@ -34,12 +34,14 @@ public class SettingsMenu implements Listener {
         Inventory inv = Bukkit.createInventory(null, 9, ChatColor.DARK_GREEN + "NVus Prison Settings");
         FileConfiguration config = configManager.getConfig("config.yml");
 
-        // Adjust the items to be spaced out and include ToolDamage toggle
-        inv.setItem(0, createToggleItem(Material.LEATHER_CHESTPLATE, "Toggle PrisonerArmor", config.getBoolean("PrisonerArmor", false)));
-        inv.setItem(2, createToggleItem(Material.IRON_DOOR, "Toggle RestrictArmor", config.getBoolean("RestrictArmor", false)));
-        inv.setItem(4, createToggleItem(Material.HOPPER, "Toggle AutoPickup", config.getBoolean("AutoPickup", false)));
-        inv.setItem(6, createToggleItem(Material.LEVER, "Toggle AutoSwitch", config.getBoolean("AutoSwitch", false)));
-        inv.setItem(8, createToggleItem(Material.IRON_PICKAXE, "Toggle ToolDamage", config.getBoolean("ToolDamage", true)));
+        inv.setItem(0, createToggleItem(Material.LEATHER_CHESTPLATE, "Toggle PrisonerArmor", config.getBoolean("PrisonerArmor", true)));
+        inv.setItem(1, createToggleItem(Material.IRON_CHESTPLATE, "Toggle RestrictArmor", config.getBoolean("RestrictArmor", true)));
+
+        inv.setItem(3, createToggleItem(Material.HOPPER, "Toggle AutoPickup", config.getBoolean("AutoPickup", true)));
+        inv.setItem(4, createToggleItem(Material.LEVER, "Toggle AutoSwitch", config.getBoolean("AutoSwitch", false)));
+
+        inv.setItem(6, createToggleItem(Material.IRON_PICKAXE, "Toggle ToolDamage", config.getBoolean("ToolDamage", false)));
+        inv.setItem(7, createToggleItem(Material.BOOK, "Reload Configs", false));
 
         player.openInventory(inv);
     }
@@ -47,19 +49,17 @@ public class SettingsMenu implements Listener {
     private ItemStack createToggleItem(Material material, String name, boolean isEnabled) {
         ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(ChatColor.GREEN + name + ": " + (isEnabled ? ChatColor.BLUE + "Enabled" : ChatColor.RED + "Disabled"));
+        // Non-Toggable Items
+        if (name.equals("Reload Configs")) {
+            meta.setDisplayName(ChatColor.GREEN + name);
+        }
+        // Toggable Items
+        else {
+            meta.setDisplayName(ChatColor.GREEN + name + ": " + (isEnabled ? ChatColor.BLUE + "Enabled" : ChatColor.RED + "Disabled"));
+        }
         item.setItemMeta(meta);
         return item;
     }
-
-//    private ItemStack createItem(Material material, String name) {
-//        ItemStack item = new ItemStack(material);
-//        ItemMeta meta = item.getItemMeta();
-//        meta.setDisplayName(name);
-//        item.setItemMeta(meta);
-//        return item;
-//    }
-
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
@@ -97,6 +97,7 @@ public class SettingsMenu implements Listener {
             } else if (displayName.contains("Reload Configs")) {
                 reloadConfigs(player);
             }
+
         };
 
         playerTasks.put(playerUUID, task);
@@ -127,5 +128,6 @@ public class SettingsMenu implements Listener {
         configManager.reloadConfig("banned_items.yml");
         configManager.saveConfig("config.yml");
         player.sendMessage(ChatColor.GREEN + "Configuration files reloaded.");
+        player.closeInventory();
     }
 }

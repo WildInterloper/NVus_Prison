@@ -7,14 +7,22 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.UUID;
+import java.io.File;
 
 public class DatabaseManager {
 
-    private String url = "jdbc:sqlite:/plugins/NVus_Prison/nvus_prison.db";
+    private String url;
+    public DatabaseManager(File dataFolder) {
+        // Construct the file path for the SQLite database
+        File databaseFile = new File(dataFolder, "nvus_prison.db");
+        this.url = "jdbc:sqlite:" + databaseFile.getAbsolutePath();
+        initializeDatabase();
+    }
 
     public DatabaseManager() {
         initializeDatabase();
     }
+
 
     private Connection connect() {
         Connection conn = null;
@@ -51,6 +59,11 @@ public class DatabaseManager {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    // Public Accessor to initialize the database
+    public void initDatabase() {
+        initializeDatabase();
     }
 
     public void createGang(String name, String ownerUuid) {

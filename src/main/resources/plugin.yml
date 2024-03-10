@@ -15,9 +15,25 @@ commands:
     usage: |
       /nvus reload - Reloads all configuration files.
       /nvus version - Shows the plugin version.
-      /nvus menu - Opens the settings menu (player only).
+      /nvus menu - Opens the settings menu.
       /nvus autopickup <true|false> - Toggles the auto item pickup feature.
       /nvus autoswitch <true|false> - Toggles the auto tool switch feature.
       /nvus prisonerarmor <true|false> - Toggles giving prisoners armor on join.
       /nvus restrictarmor <true|false> - Toggles the restriction on changing prisoner armor.
+      /nvus tooldamage <true|false> - Toggle if prisoner tools receive damage. FALSE = No Damage.
     aliases: [nvusmenu]
+
+  gang:
+    description: Base command for gang-related actions.
+    usage: |
+      /gang create <name/tag> - Create a gang
+      /gang invite <player> - Invite a player to your gang.
+      /gang accept - Accept a Gang Invite.
+      /gang deny - Decline a Gang Invite.
+      /gang leave - Leave your current Gang.
+      -----COMING SOON-----
+      /gang disband - Disband your gang.
+      /gang kick <player> - Kick a player from your gang.
+      /gang promote <player> - Promote a player to a higher rank.
+      /gang demote <player> - Demote a player to a lower rank.
+    aliases: [gangs]

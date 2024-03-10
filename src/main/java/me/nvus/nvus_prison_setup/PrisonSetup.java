@@ -20,11 +20,17 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
+import java.io.File;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public final class PrisonSetup extends JavaPlugin {
 
     private ConfigManager configManager;
-    private DatabaseManager dbManager; // Adjusted for clarity
+    private DatabaseManager dbManager;
     private GangManager gangManager; // Added reference to GangManager
     // Initialize the DatabaseManager
 
@@ -33,13 +39,27 @@ public final class PrisonSetup extends JavaPlugin {
         // Initialize the ConfigManager
         configManager = new ConfigManager(this);
 
-        // Gangs & Database
-        dbManager = new DatabaseManager(); // Initialize the DatabaseManager
-        gangManager = new GangManager(dbManager); // Initialize GangManager with DatabaseManager
+        // Get the plugin's data folder
+        File dataFolder = getDataFolder();
+
+        // Initialize the DatabaseManager with the plugin's data folder
+        dbManager = new DatabaseManager(dataFolder);
+
+        // Initialize the GangManager with the DatabaseManager
+        gangManager = new GangManager(dbManager);
+
+        // Check if SQLite DB Exists, if not init it
+        File databaseFile = new File(dataFolder, "nvus_prison.db");
+        if (!databaseFile.exists()) {
+            // If the database file doesn't exist, initialize the database
+            dbManager.initDatabase();
+            getLogger().info("SQLite database initialized successfully.");
+        } else {
+            getLogger().info("SQLite database already exists.");
+        }
 
 
-
-        // Save the default configs, if they doesn't exist
+        // Save the default configs, if they don't exist
         configManager.saveDefaultConfig("config.yml");
         configManager.saveDefaultConfig("banned_items.yml");
         configManager.saveDefaultConfig("auto_switch.yml");
@@ -52,10 +72,8 @@ public final class PrisonSetup extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ToolSwitchListener(configManager), this);
         this.getCommand("nvus").setExecutor(new CommandListener(this, configManager));
 
-        // Gang Related
-        // Register the Gang Commands
-        this.getCommand("gang create").setExecutor(new GangCommands(dbManager));
-        this.getCommand("gang invite").setExecutor(new GangCommands(dbManager));
+        // Gang Related...... GANG, GANG #LOLOLOLOL
+        this.getCommand("gang").setExecutor(new GangCommands(dbManager));
 
         // Settings Menu
         getServer().getPluginManager().registerEvents(new SettingsMenu(this, configManager), this);
@@ -102,7 +120,6 @@ public final class PrisonSetup extends JavaPlugin {
         return configManager;
     }
 
-    // Optionally, if other parts of your plugin need to access the DatabaseManager or GangManager
     public DatabaseManager getDatabaseManager() {
         return dbManager;
     }

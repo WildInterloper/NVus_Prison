@@ -1,6 +1,7 @@
 package me.nvus.nvus_prison_setup.Gangs;
 
 import me.nvus.nvus_prison_setup.Database.DatabaseManager;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,7 +16,6 @@ public class GangCommands implements CommandExecutor {
         this.gangManager = new GangManager(dbManager);
     }
 
-    @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
             sender.sendMessage("Only players can execute this command.");
@@ -25,15 +25,20 @@ public class GangCommands implements CommandExecutor {
         Player player = (Player) sender;
         UUID playerUuid = player.getUniqueId();
 
-        if (args.length >= 2 && args[0].equalsIgnoreCase("gang")) {
+        if (args.length == 0 || (args.length == 1 && args[0].equalsIgnoreCase("gang"))) {
+            // No subcommand specified, or only "gang" was specified
+            sendGangCommandHelp(player);
+            return true;
+        } else if (args.length >= 1 && args[0].equalsIgnoreCase("gang")) {
+            // A subcommand is specified, handle it accordingly
             switch (args[1].toLowerCase()) {
+                case "create":
+                    return handleGangCreate(player, args);
                 case "invite":
                     return handleGangInvite(sender, args);
                 case "accept":
-                    // Dynamically determine the gangName the player is invited to join
                     return handleGangAccept(player, playerUuid);
                 case "deny":
-                    // Dynamically determine the gangName the player wants to deny
                     return handleGangDeny(player, playerUuid);
                 case "leave":
                     return handleGangLeave(player, playerUuid);
@@ -43,6 +48,52 @@ public class GangCommands implements CommandExecutor {
             }
         }
         return false;
+    }
+
+    private void sendGangCommandHelp(Player player) {
+        StringBuilder message = new StringBuilder();
+        message.append(ChatColor.GREEN).append("\n");
+        message.append(ChatColor.LIGHT_PURPLE).append("NVus Prison Gangs:\n");
+        message.append(ChatColor.DARK_GRAY).append("=======\n");
+        message.append(ChatColor.GREEN).append("/gang create <name/tag> - Use this to create a gang.\n");
+        message.append(ChatColor.GREEN).append("/gang invite <player> - Invite player to your gang.\n");
+        message.append(ChatColor.GREEN).append("/gang accept - Accept an invite to a gang.\n");
+        message.append(ChatColor.GREEN).append("/gang deny - Deny an invite to a gang.\n");
+        message.append(ChatColor.GREEN).append("/gang leave - Leave your current gang.\n");
+        message.append(ChatColor.GREEN).append("\n");
+        message.append(ChatColor.YELLOW).append("COMING SOON:\n");
+        message.append(ChatColor.YELLOW).append("=============\n");
+        message.append(ChatColor.GREEN).append("/gang disband - Delete/Remove your gang.\n");
+        message.append(ChatColor.GREEN).append("/gang promote <player> - Promote a gang member to a higher rank.\n");
+        message.append(ChatColor.GREEN).append("/gang kick <player> - Kick a member from your gang.\n");
+        message.append(ChatColor.GREEN).append("\n");
+
+        player.sendMessage(message.toString());
+    }
+
+
+    private boolean handleGangCreate(Player player, String[] args) {
+        if (args.length != 2) {
+            player.sendMessage("Usage: /gang create <gangName>");
+            return true;
+        }
+
+        String gangName = args[1];
+
+        // Check if the player already belongs to a gang
+        String currentGang = gangManager.getCurrentGangName(player.getUniqueId());
+        if (currentGang != null) {
+            player.sendMessage("You already belong to a gang.");
+            return true;
+        }
+
+        // Create the gang
+        if (gangManager.createGang(gangName, player)) {
+            player.sendMessage("Gang created successfully!");
+        } else {
+            player.sendMessage("Failed to create gang. The gang may already exist.");
+        }
+        return true;
     }
 
     private boolean handleGangInvite(CommandSender sender, String[] args) {

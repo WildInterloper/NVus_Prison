@@ -13,13 +13,20 @@ public class GangManager {
         this.dbManager = dbManager;
     }
 
-    public boolean createGang(String gangName, UUID ownerUuid) {
+    public boolean createGang(String gangName, Player owner) {
+        UUID ownerUuid = owner.getUniqueId();
+        String ownerUuidString = ownerUuid.toString();
+
+        // Check if the gang already exists
         if (dbManager.getGangIdByName(gangName) != null) {
             return false;
         }
-        dbManager.createGang(gangName, ownerUuid.toString());
+
+        // Create the gang in the database
+        dbManager.createGang(gangName, ownerUuidString);
         return true;
     }
+
 
     // Method to add a member to a gang
     public boolean addMemberToGang(String username, UUID uuid, String gangName, String rank) {
@@ -63,9 +70,6 @@ public class GangManager {
     public boolean denyInvitation(UUID playerUuid, String gangName) {
         return dbManager.removeMember(playerUuid, gangName);
     }
-
-
-
 
 
     private String resolveUsername(UUID uuid) {

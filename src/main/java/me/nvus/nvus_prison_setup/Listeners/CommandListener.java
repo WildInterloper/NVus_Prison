@@ -28,7 +28,28 @@ public class CommandListener implements CommandExecutor {
         }
 
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.RED + "Usage: /nvus <reload|version|menu|autopickup|autoswitch> [arguments]");
+            StringBuilder message = new StringBuilder();
+            message.append(ChatColor.GREEN).append("\n");
+            message.append(ChatColor.GOLD).append("NVus Prison GOLD Edition:\n");
+            message.append(ChatColor.DARK_GRAY).append("==========================\n");
+            message.append(ChatColor.GREEN).append("/nvus reload - Reloads all configuration files.\n");
+            message.append(ChatColor.GREEN).append("/nvus version - Shows the plugin version.\n");
+            message.append(ChatColor.GREEN).append("/nvus menu - Open a GUI menu to toggle options on/off.\n");
+            message.append(ChatColor.GREEN).append("/nvus autopickup true|false - Toggle prisoner auto pickup of mined resources.\n");
+            message.append(ChatColor.GREEN).append("/nvus autoswitch true|false - Toggle prisoner auto switching to correct tools when mining.\n");
+            message.append(ChatColor.GREEN).append("/nvus prisonerarmor true|false - Toggle if prisoners spawn with orange leather armor aka jumpsuits.\n");
+            message.append(ChatColor.GREEN).append("/nvus restrictarmor true|false - Toggle if prisoners can change their armor or not.\n");
+            message.append(ChatColor.GREEN).append("/nvus tooldamage true|false - Toggle if prisoner tools receive damage. FALSE = no damage!\n");
+            message.append(ChatColor.AQUA).append("Support: https://FNGnation.net/discord\n");
+            message.append(ChatColor.AQUA).append("\n");
+            message.append(ChatColor.LIGHT_PURPLE).append("GANGS:\n");
+            message.append(ChatColor.DARK_GRAY).append("=======\n");
+            message.append(ChatColor.GREEN).append("/gang - Use this to see full gang command list!");
+            message.append(ChatColor.GREEN).append("\n");
+
+            sender.sendMessage(message.toString());
+
+
             return true;
         }
 

@@ -9,20 +9,42 @@ import java.sql.Statement;
 import java.util.UUID;
 import java.io.File;
 
+import me.nvus.nvus_prison_setup.Configs.ConfigManager;
+import org.bukkit.configuration.file.FileConfiguration;
+
 public class DatabaseManager {
 
+    private ConfigManager configManager;
     private String url;
-    public DatabaseManager(File dataFolder) {
-        // Construct the file path for the SQLite database
-        File databaseFile = new File(dataFolder, "nvus_prison.db");
-        this.url = "jdbc:sqlite:" + databaseFile.getAbsolutePath();
+
+    public DatabaseManager(ConfigManager configManager) {
+        this.configManager = configManager;
+        loadDatabaseConfig();
         initializeDatabase();
     }
+
+//    public DatabaseManager(File dataFolder) {
+//        // Construct the file path for the SQLite database
+//        File databaseFile = new File(dataFolder, "nvus_prison.db");
+//        this.url = "jdbc:sqlite:" + databaseFile.getAbsolutePath();
+//        initializeDatabase();
+//    }
 
     public DatabaseManager() {
         initializeDatabase();
     }
 
+    private void loadDatabaseConfig() {
+        FileConfiguration config = configManager.getConfig("config.yml");
+        String host = config.getString("host", "localhost");
+        int port = config.getInt("port", 3306);
+        String database = config.getString("database", "nvus_prison");
+        String username = config.getString("username", "root");
+        String password = config.getString("password", "");
+
+        // Adjust this URL format according to your DBMS (MySQL in this case)
+        this.url = "jdbc:mysql://" + host + ":" + port + "/" + database + "?user=" + username + "&password=" + password;
+    }
 
     private Connection connect() {
         Connection conn = null;
@@ -184,6 +206,22 @@ public class DatabaseManager {
         return true;
     }
 
+    public String getMemberRank(UUID playerUuid, String gangName) {
+        String sql = "SELECT m.rank FROM members m INNER JOIN gangs g ON m.gang_id = g.id WHERE m.uuid = ? AND g.name = ?";
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, playerUuid.toString());
+            pstmt.setString(2, gangName);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getString("rank");
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return null; // Return null if the member's rank was not found or an error occurs
+    }
+
     public boolean updateMemberRank(UUID playerUuid, String gangName, String newRank) {
         String sql = "UPDATE members SET rank = ? WHERE uuid = ? AND gang_id = (SELECT id FROM gangs WHERE name = ?)";
 
@@ -216,8 +254,6 @@ public class DatabaseManager {
             return false;
         }
     }
-
-
 
 
 }

@@ -1,5 +1,5 @@
 #======================================================================================#
-#                                NVus PRISON SETUP                                     #
+#                             NVus PRISON GOLD EDITION                                 #
 #                                   by never2nv                                        #
 #                                www.FNGnation.net                                     #
 #                          Discord: FNGnation.net/discord                              #
@@ -29,3 +29,11 @@ PrisonerTools:
   - IRON_SHOVEL
 # When set to FALSE it will prevent Prisoner Tools from receiving damage when mining etc.
 ToolDamage: false
+
+# Database Settings
+host: 0.0.0.0
+port: 3306
+database: nvus_prison
+username: username
+password: password
+

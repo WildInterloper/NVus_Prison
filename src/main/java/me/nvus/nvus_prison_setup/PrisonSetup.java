@@ -43,7 +43,7 @@ public final class PrisonSetup extends JavaPlugin {
         File dataFolder = getDataFolder();
 
         // Initialize the DatabaseManager with the plugin's data folder
-        dbManager = new DatabaseManager(dataFolder);
+        DatabaseManager databaseManager = new DatabaseManager(configManager);
 
         // Initialize the GangManager with the DatabaseManager
         gangManager = new GangManager(dbManager);

@@ -16,6 +16,7 @@ public class GangCommands implements CommandExecutor {
         this.gangManager = new GangManager(dbManager);
     }
 
+    @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
             sender.sendMessage("Only players can execute this command.");
@@ -23,31 +24,98 @@ public class GangCommands implements CommandExecutor {
         }
 
         Player player = (Player) sender;
-        UUID playerUuid = player.getUniqueId();
 
-        if (args.length == 0 || (args.length == 1 && args[0].equalsIgnoreCase("gang"))) {
-            // No subcommand specified, or only "gang" was specified
+        // Display help if no arguments are provided or if the first argument is "help"
+        if (args.length == 0 || (args.length == 1 && args[0].equalsIgnoreCase("help"))) {
             sendGangCommandHelp(player);
             return true;
-        } else if (args.length >= 1 && args[0].equalsIgnoreCase("gang")) {
-            // A subcommand is specified, handle it accordingly
-            switch (args[1].toLowerCase()) {
-                case "create":
-                    return handleGangCreate(player, args);
-                case "invite":
-                    return handleGangInvite(sender, args);
-                case "accept":
-                    return handleGangAccept(player, playerUuid);
-                case "deny":
-                    return handleGangDeny(player, playerUuid);
-                case "leave":
-                    return handleGangLeave(player, playerUuid);
-                default:
-                    player.sendMessage("Invalid gang command.");
-                    return true;
-            }
         }
-        return false;
+
+        switch (args[0].toLowerCase()) {
+            case "create":
+                return handleGangCreate(player, args);
+            case "invite":
+                return handleGangInvite(sender, args);
+            case "accept":
+                return handleGangAccept(player, player.getUniqueId());
+            case "deny":
+                return handleGangDeny(player, player.getUniqueId());
+            case "leave":
+                return handleGangLeave(player, player.getUniqueId());
+            case "promote":
+                return handleGangPromote(sender, args);
+            case "kick":
+                return handleGangKick(sender, args);
+            default:
+                player.sendMessage(ChatColor.RED + "Invalid gang command. Use /gang help for a list of commands.");
+                return true;
+        }
+    }
+
+    private boolean handleGangPromote(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage("Only players can execute this command.");
+            return true;
+        }
+        if (args.length != 3) {
+            sender.sendMessage(ChatColor.RED + "Usage: /gang promote <player>");
+            return true;
+        }
+
+        Player player = (Player) sender;
+        Player targetPlayer = player.getServer().getPlayer(args[2]);
+        if (targetPlayer == null) {
+            player.sendMessage(ChatColor.RED + "Player not found: " + args[2]);
+            return true;
+        }
+
+        String gangName = gangManager.getCurrentGangName(player.getUniqueId());
+        if (gangName == null) {
+            player.sendMessage(ChatColor.RED + "You are not in a gang.");
+            return true;
+        }
+
+        boolean success = gangManager.promoteMember(player.getUniqueId(), targetPlayer.getUniqueId(), gangName);
+        if (success) {
+            player.sendMessage(ChatColor.GREEN + "Successfully promoted " + targetPlayer.getName() + ".");
+        } else {
+            player.sendMessage(ChatColor.RED + "Failed to promote " + targetPlayer.getName() + ".");
+        }
+
+        return true;
+    }
+
+    private boolean handleGangKick(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage("Only players can execute this command.");
+            return true;
+        }
+        if (args.length != 3) {
+            sender.sendMessage(ChatColor.RED + "Usage: /gang kick <player>");
+            return true;
+        }
+
+        Player player = (Player) sender;
+        Player targetPlayer = player.getServer().getPlayer(args[2]);
+        if (targetPlayer == null) {
+            player.sendMessage(ChatColor.RED + "Player not found: " + args[2]);
+            return true;
+        }
+
+        String gangName = gangManager.getCurrentGangName(player.getUniqueId());
+        if (gangName == null) {
+            player.sendMessage(ChatColor.RED + "You are not in a gang.");
+            return true;
+        }
+
+        boolean success = gangManager.kickMember(player.getUniqueId(), targetPlayer.getUniqueId(), gangName);
+        if (success) {
+            player.sendMessage(ChatColor.GREEN + "Successfully kicked " + targetPlayer.getName() + " from the gang.");
+        } else {
+            player.sendMessage(ChatColor.RED + "Failed to kick " + targetPlayer.getName() + ".");
+        }
+
+        return true;
     }
 
     private void sendGangCommandHelp(Player player) {
@@ -73,8 +141,14 @@ public class GangCommands implements CommandExecutor {
 
 
     private boolean handleGangCreate(Player player, String[] args) {
+        // Check if the player has the required permission
+        if (!player.hasPermission("nvus.gang.create")) {
+            player.sendMessage(ChatColor.RED + "You do not have permission to create a gang.");
+            return true;
+        }
+
         if (args.length != 2) {
-            player.sendMessage("Usage: /gang create <gangName>");
+            player.sendMessage(ChatColor.RED + "Usage: /gang create <gangName>");
             return true;
         }
 
@@ -83,18 +157,19 @@ public class GangCommands implements CommandExecutor {
         // Check if the player already belongs to a gang
         String currentGang = gangManager.getCurrentGangName(player.getUniqueId());
         if (currentGang != null) {
-            player.sendMessage("You already belong to a gang.");
+            player.sendMessage(ChatColor.RED + "You already belong to a gang.");
             return true;
         }
 
         // Create the gang
         if (gangManager.createGang(gangName, player)) {
-            player.sendMessage("Gang created successfully!");
+            player.sendMessage(ChatColor.GREEN + "Gang created successfully!");
         } else {
-            player.sendMessage("Failed to create gang. The gang may already exist.");
+            player.sendMessage(ChatColor.RED + "Failed to create gang. The gang may already exist.");
         }
         return true;
     }
+
 
     private boolean handleGangInvite(CommandSender sender, String[] args) {
         if (args.length != 3) {

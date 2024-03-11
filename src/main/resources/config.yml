@@ -31,6 +31,8 @@ PrisonerTools:
 ToolDamage: false
 
 # Database Settings
+# MySQL or SQLite (local)
+Database.Type: MySQL
 host: 0.0.0.0
 port: 3306
 database: nvus_prison

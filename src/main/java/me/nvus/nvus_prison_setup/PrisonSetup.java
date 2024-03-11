@@ -39,25 +39,20 @@ public final class PrisonSetup extends JavaPlugin {
         // Initialize the ConfigManager
         configManager = new ConfigManager(this);
 
-        // Get the plugin's data folder
-        File dataFolder = getDataFolder();
-
-        // Initialize the DatabaseManager with the plugin's data folder
-        DatabaseManager databaseManager = new DatabaseManager(configManager);
+        // Initialize the DatabaseManager with ConfigManager
+        dbManager = new DatabaseManager(configManager); // Correctly assign to the class field
 
         // Initialize the GangManager with the DatabaseManager
-        gangManager = new GangManager(dbManager);
+        gangManager = new GangManager(dbManager); // Use the corrected dbManager
 
         // Check if SQLite DB Exists, if not init it
-        File databaseFile = new File(dataFolder, "nvus_prison.db");
+        File databaseFile = new File(getDataFolder(), "nvus_prison.db");
         if (!databaseFile.exists()) {
-            // If the database file doesn't exist, initialize the database
-            dbManager.initDatabase();
+            dbManager.initDatabase(); // Correct use of dbManager after initialization
             getLogger().info("SQLite database initialized successfully.");
         } else {
             getLogger().info("SQLite database already exists.");
         }
-
 
         // Save the default configs, if they don't exist
         configManager.saveDefaultConfig("config.yml");
@@ -72,8 +67,8 @@ public final class PrisonSetup extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ToolSwitchListener(configManager), this);
         this.getCommand("nvus").setExecutor(new CommandListener(this, configManager));
 
-        // Gang Related...... GANG, GANG #LOLOLOLOL
-        this.getCommand("gang").setExecutor(new GangCommands(dbManager));
+        // Gang Related... GANG, GANG #LOLOLOLOL
+        this.getCommand("gang").setExecutor(new GangCommands(dbManager)); // Now correctly using initialized dbManager
 
         // Settings Menu
         getServer().getPluginManager().registerEvents(new SettingsMenu(this, configManager), this);
@@ -89,7 +84,6 @@ public final class PrisonSetup extends JavaPlugin {
         new UpdateChecker(this, 12345).getVersion(version -> {
             if (!this.getDescription().getVersion().equals(version)) {
                 getLogger().info("There is a new update available for NVus Prison Setup! Grab it from SpigotMC here: https://www.spigotmc.org/resources/nvus-prison-setup.115441/");
-
                 Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
                     for (Player player : Bukkit.getOnlinePlayers()) {
                         if (player.isOp() || player.hasPermission("nvus.admin")) {
@@ -101,8 +95,8 @@ public final class PrisonSetup extends JavaPlugin {
                 }, 20L * 60);
             }
         });
-
     }
+
 
 
     @Override

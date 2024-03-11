@@ -44,8 +44,12 @@ public class GangCommands implements CommandExecutor {
                 return handleGangLeave(player, player.getUniqueId());
             case "promote":
                 return handleGangPromote(sender, args);
+            case "demote":
+                return handleGangDemote(sender, args);
             case "kick":
                 return handleGangKick(sender, args);
+            case "disband":
+                return handleGangDisband(sender, args);
             default:
                 player.sendMessage(ChatColor.RED + "Invalid gang command. Use /gang help for a list of commands.");
                 return true;
@@ -85,6 +89,54 @@ public class GangCommands implements CommandExecutor {
         return true;
     }
 
+    private boolean handleGangDemote(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(ChatColor.RED + "This command can only be executed by a player.");
+            return true;
+        }
+
+        Player player = (Player) sender;
+
+        if (args.length != 3) {
+            sender.sendMessage(ChatColor.RED + "Usage: /gang demote <playerName>");
+            return true;
+        }
+
+        String targetPlayerName = args[2];
+        Player targetPlayer = player.getServer().getPlayer(targetPlayerName);
+
+        if (targetPlayer == null) {
+            sender.sendMessage(ChatColor.RED + "Player " + targetPlayerName + " not found.");
+            return true;
+        }
+
+        UUID playerUuid = player.getUniqueId();
+        UUID targetPlayerUuid = targetPlayer.getUniqueId();
+        String gangName = gangManager.getCurrentGangName(playerUuid);
+
+        if (gangName == null) {
+            player.sendMessage(ChatColor.RED + "You are not part of a gang.");
+            return true;
+        }
+
+        // Check if the player has the authority to demote members in the gang
+        if (!gangManager.canKickOrPromote(playerUuid, gangName)) {
+            player.sendMessage(ChatColor.RED + "You do not have the permission to demote members in the gang.");
+            return true;
+        }
+
+        // Attempt to demote the member
+        boolean success = gangManager.demoteMember(playerUuid, targetPlayerUuid, gangName);
+        if (success) {
+            player.sendMessage(ChatColor.GREEN + "Successfully demoted " + targetPlayer.getName() + " in the gang.");
+            targetPlayer.sendMessage(ChatColor.YELLOW + "You have been demoted in the gang " + gangName + ".");
+        } else {
+            player.sendMessage(ChatColor.RED + "Failed to demote " + targetPlayer.getName() + ".");
+        }
+
+        return true;
+    }
+
     private boolean handleGangKick(CommandSender sender, String[] args) {
         if (!(sender instanceof Player)) {
             sender.sendMessage("Only players can execute this command.");
@@ -117,6 +169,30 @@ public class GangCommands implements CommandExecutor {
 
         return true;
     }
+
+    private boolean handleGangDisband(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(ChatColor.RED + "Only players can use this command.");
+            return true;
+        }
+
+        Player player = (Player) sender;
+        String gangName = gangManager.getCurrentGangName(player.getUniqueId());
+
+        if (gangName == null) {
+            player.sendMessage(ChatColor.RED + "You are not in a gang.");
+            return true;
+        }
+
+        if (gangManager.disbandGang(gangName, player.getUniqueId())) {
+            player.sendMessage(ChatColor.GREEN + "Your gang has been successfully disbanded.");
+        } else {
+            player.sendMessage(ChatColor.RED + "Failed to disband your gang. You must be the gang owner.");
+        }
+
+        return true;
+    }
+
 
     private void sendGangCommandHelp(Player player) {
         StringBuilder message = new StringBuilder();

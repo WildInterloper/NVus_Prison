@@ -21,7 +21,7 @@ commands:
       /nvus prisonerarmor <true|false> - Toggles giving prisoners armor on join.
       /nvus restrictarmor <true|false> - Toggles the restriction on changing prisoner armor.
       /nvus tooldamage <true|false> - Toggle if prisoner tools receive damage. FALSE = No Damage.
-    aliases: [nvusmenu]
+    aliases: [prison]
 
   gang:
     description: Base command for gang-related actions.
@@ -31,7 +31,6 @@ commands:
       /gang accept - Accept a Gang Invite.
       /gang deny - Decline a Gang Invite.
       /gang leave - Leave your current Gang.
-      -----COMING SOON-----
       /gang disband - Disband your gang.
       /gang kick <player> - Kick a player from your gang.
       /gang promote <player> - Promote a player to a higher rank.

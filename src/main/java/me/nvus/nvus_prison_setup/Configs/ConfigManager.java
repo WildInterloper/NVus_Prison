@@ -20,6 +20,10 @@ public class ConfigManager {
         this.configFiles = new HashMap<>();
     }
 
+    public File getDataFolder() {
+        return plugin.getDataFolder();
+    }
+
     public void reloadConfig(String configName) {
         File configFile = getConfigFile(configName);
         FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);

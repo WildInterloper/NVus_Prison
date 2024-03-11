@@ -8,80 +8,68 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.UUID;
 import java.io.File;
-
-import me.nvus.nvus_prison_setup.Configs.ConfigManager;
 import org.bukkit.configuration.file.FileConfiguration;
+import me.nvus.nvus_prison_setup.Configs.ConfigManager;
 
 public class DatabaseManager {
-
     private ConfigManager configManager;
     private String url;
+    private String databaseType; // To store the database type (MySQL or SQLite)
 
     public DatabaseManager(ConfigManager configManager) {
         this.configManager = configManager;
-        loadDatabaseConfig();
-        initializeDatabase();
+        setupDatabase();
     }
 
-//    public DatabaseManager(File dataFolder) {
-//        // Construct the file path for the SQLite database
-//        File databaseFile = new File(dataFolder, "nvus_prison.db");
-//        this.url = "jdbc:sqlite:" + databaseFile.getAbsolutePath();
-//        initializeDatabase();
-//    }
-
-    public DatabaseManager() {
-        initializeDatabase();
-    }
-
-    private void loadDatabaseConfig() {
+    private void setupDatabase() {
         FileConfiguration config = configManager.getConfig("config.yml");
-        String host = config.getString("host", "localhost");
-        int port = config.getInt("port", 3306);
-        String database = config.getString("database", "nvus_prison");
-        String username = config.getString("username", "root");
-        String password = config.getString("password", "");
+        this.databaseType = config.getString("Database.Type", "MySQL");
 
-        // Adjust this URL format according to your DBMS (MySQL in this case)
-        this.url = "jdbc:mysql://" + host + ":" + port + "/" + database + "?user=" + username + "&password=" + password;
+        if ("SQLite".equalsIgnoreCase(databaseType)) {
+            File dbFile = new File(configManager.getDataFolder(), "nvus_prison.db");
+            this.url = "jdbc:sqlite:" + dbFile.getAbsolutePath();
+        } else {
+            // Default to MySQL
+            String host = config.getString("host", "localhost");
+            int port = config.getInt("port", 3306);
+            String database = config.getString("database", "nvus_prison");
+            String username = config.getString("username", "root");
+            String password = config.getString("password", "");
+            this.url = "jdbc:mysql://" + host + ":" + port + "/" + database + "?user=" + username + "&password=" + password;
+        }
+
+        // Attempt to initialize the database structure
+        initializeDatabase();
     }
 
-    private Connection connect() {
-        Connection conn = null;
-        try {
-            conn = DriverManager.getConnection(url);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return conn;
+    private Connection connect() throws SQLException {
+        return DriverManager.getConnection(url);
     }
 
     private void initializeDatabase() {
-        // SQL statement for creating gangs table
         String sqlGangs = "CREATE TABLE IF NOT EXISTS gangs ("
-                + " id INTEGER PRIMARY KEY,"
-                + " name TEXT NOT NULL,"
-                + " owner_uuid TEXT NOT NULL"
+                + "id INTEGER PRIMARY KEY " + (databaseType.equalsIgnoreCase("SQLite") ? "AUTOINCREMENT" : "AUTO_INCREMENT") + ","
+                + "name TEXT NOT NULL,"
+                + "owner_uuid TEXT NOT NULL"
                 + ");";
 
-        // SQL statement for creating members table
         String sqlMembers = "CREATE TABLE IF NOT EXISTS members ("
-                + " uuid TEXT PRIMARY KEY,"
-                + " username TEXT NOT NULL,"
-                + " gang_id INTEGER NOT NULL,"
-                + " rank TEXT NOT NULL,"
-                + " FOREIGN KEY (gang_id) REFERENCES gangs(id)"
+                + "uuid TEXT PRIMARY KEY,"
+                + "username TEXT NOT NULL,"
+                + "gang_id INTEGER NOT NULL,"
+                + "rank TEXT NOT NULL,"
+                + "FOREIGN KEY (gang_id) REFERENCES gangs(id)"
                 + ");";
 
-        try (Connection conn = connect();
-             Statement stmt = conn.createStatement()) {
-            // Create the gangs and members tables
+        try (Connection conn = connect(); Statement stmt = conn.createStatement()) {
             stmt.execute(sqlGangs);
             stmt.execute(sqlMembers);
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println("Error initializing database: " + e.getMessage());
         }
     }
+
+
 
     // Public Accessor to initialize the database
     public void initDatabase() {
@@ -98,6 +86,19 @@ public class DatabaseManager {
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+        }
+    }
+
+    public boolean removeGang(String gangName) {
+        String sql = "DELETE FROM gangs WHERE name = ?";
+
+        try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, gangName);
+            int affectedRows = pstmt.executeUpdate();
+            return affectedRows > 0;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return false;
         }
     }
 
@@ -254,6 +255,20 @@ public class DatabaseManager {
             return false;
         }
     }
+
+    public boolean removeMembersByGangId(int gangId) {
+        String sql = "DELETE FROM members WHERE gang_id = ?";
+
+        try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, gangId);
+            int affectedRows = pstmt.executeUpdate();
+            return affectedRows > 0;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+    }
+
 
 
 }

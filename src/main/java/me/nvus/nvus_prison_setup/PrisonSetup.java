@@ -9,6 +9,7 @@ import me.nvus.nvus_prison_setup.Listeners.PlayerItems;
 import me.nvus.nvus_prison_setup.Listeners.PlayerSpawn;
 import me.nvus.nvus_prison_setup.Listeners.BlockListener;
 import me.nvus.nvus_prison_setup.Listeners.ToolSwitchListener;
+import me.nvus.nvus_prison_setup.Placeholders.GangPlaceholders;
 import me.nvus.nvus_prison_setup.Updater.UpdateChecker;
 import me.nvus.nvus_prison_setup.Listeners.ToolDamageListener;
 import me.nvus.nvus_prison_setup.TreeFarm.TreeFarmListener;
@@ -75,6 +76,10 @@ public final class PrisonSetup extends JavaPlugin {
 
         // Gang Related... GANG, GANG #LOLOLOLOL
         this.getCommand("gang").setExecutor(new GangCommands(dbManager)); // Now correctly using initialized dbManager
+        // Register the Gangs placeholder expansion
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new GangPlaceholders(gangManager).register();
+        }
 
         // Settings Menu
         getServer().getPluginManager().registerEvents(new SettingsMenu(this, configManager), this);

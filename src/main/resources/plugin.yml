@@ -10,6 +10,7 @@ depend:
   - WorldGuard
 
 softdepend:
+  - PlaceholderAPI
   - WorldEdit
   - FastAsyncWorldEdit
 
@@ -31,7 +32,7 @@ commands:
     description: Base command for gang-related actions.
     usage: |
       /gang create <name/tag> - Create a gang.
-      /gang list - View your Gang info.
+      /gang info - View your current Gangs info.
       /gang invite <player> - Invite a player to your gang.
       /gang accept - Accept a Gang Invite.
       /gang deny - Decline a Gang Invite.

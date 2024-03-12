@@ -53,8 +53,10 @@ public class GangManager {
     }
 
     public boolean createGang(String gangName, Player owner) {
-        if (dbManager.getGangIdByName(gangName) != null) return false;
-        dbManager.createGang(gangName, owner.getUniqueId().toString());
+        if (dbManager.getGangIdByName(gangName) != null) {
+            return false; // Gang already exists
+        }
+        dbManager.createGang(gangName, owner.getUniqueId().toString(), owner.getName());
         return true;
     }
 

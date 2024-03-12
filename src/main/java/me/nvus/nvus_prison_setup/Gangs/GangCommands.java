@@ -50,8 +50,8 @@ public class GangCommands implements CommandExecutor {
                 return handleGangKick(sender, args);
             case "disband":
                 return handleGangDisband(sender, args);
-            case "list":
-                return handleGangList(sender, args);
+            case "info":
+                return handleGangInfo(sender, args);
             default:
                 player.sendMessage(ChatColor.RED + "Invalid gang command. Use /gang help for a list of commands.");
                 return true;
@@ -202,7 +202,7 @@ public class GangCommands implements CommandExecutor {
         message.append(ChatColor.LIGHT_PURPLE).append("NVus Prison Gangs:\n");
         message.append(ChatColor.DARK_GRAY).append("=======\n");
         message.append(ChatColor.GREEN).append("/gang create <name/tag> - Use this to create a gang.\n");
-        message.append(ChatColor.GREEN).append("/gang list - Get info about your current gang.\n");
+        message.append(ChatColor.GREEN).append("/gang info - Get info about your current gang.\n");
         message.append(ChatColor.GREEN).append("/gang invite <player> - Invite player to your gang.\n");
         message.append(ChatColor.GREEN).append("\n");
         message.append(ChatColor.GREEN).append("/gang accept - Accept an invite to a gang.\n");
@@ -225,12 +225,25 @@ public class GangCommands implements CommandExecutor {
             return true;
         }
 
+        // Check if exactly two arguments are provided (/gang create <name>)
         if (args.length != 2) {
             player.sendMessage(ChatColor.RED + "Usage: /gang create <gangName>");
             return true;
         }
 
         String gangName = args[1];
+
+        // Check if the gang name is a single word
+        if (gangName.contains(" ")) {
+            player.sendMessage(ChatColor.RED + "Gang name must be a single word.");
+            return true;
+        }
+
+        // Check if the gang name length is between 3 and 6 characters
+        if (gangName.length() < 3 || gangName.length() > 6) {
+            player.sendMessage(ChatColor.RED + "Gang name must be between 3 and 6 letters.");
+            return true;
+        }
 
         // Check if the player already belongs to a gang
         String currentGang = gangManager.getCurrentGangName(player.getUniqueId());
@@ -247,6 +260,7 @@ public class GangCommands implements CommandExecutor {
         }
         return true;
     }
+
 
 
     private boolean handleGangInvite(CommandSender sender, String[] args) {
@@ -317,7 +331,7 @@ public class GangCommands implements CommandExecutor {
         return true;
     }
 
-    private boolean handleGangList(CommandSender sender, String[] args) {
+    private boolean handleGangInfo(CommandSender sender, String[] args) {
         if (!(sender instanceof Player)) {
             sender.sendMessage("This command can only be used by players.");
             return true;
@@ -327,7 +341,7 @@ public class GangCommands implements CommandExecutor {
         String gangName = gangManager.getCurrentGangName(player.getUniqueId());
 
         if (gangName == null) {
-            player.sendMessage("You are not in a gang.");
+            player.sendMessage("You are not currently in a gang! Maybe create or... join one? ;)");
             return true;
         }
 

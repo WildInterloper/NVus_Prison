@@ -82,25 +82,64 @@ public class DatabaseManager {
         initializeDatabase();
     }
 
-    public void createGang(String name, String ownerUuid) {
-        String sql = "INSERT INTO nvus_gangs(name, owner_uuid) VALUES(?,?)";
+    public void createGang(String name, String ownerUuid, String ownerName) {
+        String insertGangSQL = "INSERT INTO nvus_gangs(name, owner_uuid) VALUES(?,?)";
+        String insertMemberSQL = "INSERT INTO nvus_gangs_members(uuid, username, gang_id, rank) VALUES(?,?,(SELECT id FROM nvus_gangs WHERE owner_uuid = ?),'Owner')";
 
         try (Connection conn = this.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, name);
-            pstmt.setString(2, ownerUuid);
-            pstmt.executeUpdate();
+             PreparedStatement insertGangStmt = conn.prepareStatement(insertGangSQL, Statement.RETURN_GENERATED_KEYS);
+             PreparedStatement insertMemberStmt = conn.prepareStatement(insertMemberSQL)) {
+
+            // Insert the gang
+            insertGangStmt.setString(1, name);
+            insertGangStmt.setString(2, ownerUuid);
+            insertGangStmt.executeUpdate();
+
+            // Insert the owner as a member
+            insertMemberStmt.setString(1, ownerUuid);
+            insertMemberStmt.setString(2, ownerName);
+            insertMemberStmt.setString(3, ownerUuid); // Re-use owner UUID to fetch the gang ID
+            insertMemberStmt.executeUpdate();
+
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println("Error creating gang and adding owner as member: " + e.getMessage());
         }
     }
 
+
+
+//    public void createGang(String name, String ownerUuid) {
+//        String sql = "INSERT INTO nvus_gangs(name, owner_uuid) VALUES(?,?)";
+//        String sqlMember = "INSERT INTO nvus_gangs_members(name, owner_uuid) VALUES(?,?)";
+//        try (Connection conn = this.connect();
+//             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+//            pstmt.setString(1, name);
+//            pstmt.setString(2, ownerUuid);
+//            pstmt.executeUpdate();
+//        }
+//        catch (SQLException e) {
+//            System.out.println(e.getMessage());
+//        }
+//        try (Connection conn = this.connect();
+//             PreparedStatement pstmt = conn.prepareStatement(sqlMember)) {
+//            pstmt.setString(1, name);
+//            pstmt.setString(2, ownerUuid);
+//            pstmt.executeUpdate();
+//        }
+//        catch (SQLException e) {
+//            System.out.println(e.getMessage());
+//        }
+//    }
+
     public GangInfo getGangInfo(String gangName) {
-        String gangInfoQuery = "SELECT g.name, (SELECT username FROM members WHERE uuid = g.owner_uuid) AS ownerName, COUNT(m.uuid) AS memberCount " +
+        // Updated query to match gang_id from nvus_gangs_members with id in nvus_gangs, maybe a re-write is needed to match these id's as gangid??
+        String gangInfoQuery = "SELECT g.name, " +
+                "(SELECT username FROM nvus_gangs_members WHERE uuid = g.owner_uuid) AS ownerName, " +
+                "COUNT(m.uuid) AS memberCount " +
                 "FROM nvus_gangs g " +
-                "LEFT JOIN nvus_gangs_members m ON g.id = m.gang_id " +
+                "JOIN nvus_gangs_members m ON g.id = m.gang_id " +
                 "WHERE g.name = ? " +
-                "GROUP BY g.name";
+                "GROUP BY g.name, g.owner_uuid";
 
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(gangInfoQuery)) {
@@ -118,6 +157,7 @@ public class DatabaseManager {
         }
         return null; // Return null if gang info could not be retrieved
     }
+
 
 
 

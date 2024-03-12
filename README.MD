@@ -48,6 +48,7 @@ Currently, the plugin implements the following features, so far:
  - [X]  Prison Gangs **
  - [X]  Additional Gang Commands (kick, promote, disband) **
  - [X]  Tree Farm **
+ - [x]  Gang PlaceholderAPI support (display Gang Name for chat etc)
  - [ ]  Spawn with Prisoner Tools (Toggable)
  - [ ]  Restrict Prisoner Tools from moving in inventory and dropping? (Toggable)
  - [ ]  Prisoner Tokens or Gems (Tied into Vault?)\

@@ -11,12 +11,16 @@ import me.nvus.nvus_prison_setup.Listeners.BlockListener;
 import me.nvus.nvus_prison_setup.Listeners.ToolSwitchListener;
 import me.nvus.nvus_prison_setup.Updater.UpdateChecker;
 import me.nvus.nvus_prison_setup.Listeners.ToolDamageListener;
+import me.nvus.nvus_prison_setup.TreeFarm.TreeFarmListener;
 // Database
 import me.nvus.nvus_prison_setup.Database.DatabaseManager;
 // Gangs
 import me.nvus.nvus_prison_setup.Gangs.GangCommands;
 import me.nvus.nvus_prison_setup.Gangs.GangManager;
+
+// Bukkit
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -32,10 +36,10 @@ public final class PrisonSetup extends JavaPlugin {
     private ConfigManager configManager;
     private DatabaseManager dbManager;
     private GangManager gangManager; // Added reference to GangManager
-    // Initialize the DatabaseManager
 
     @Override
     public void onEnable() {
+
         // Initialize the ConfigManager
         configManager = new ConfigManager(this);
 
@@ -49,7 +53,7 @@ public final class PrisonSetup extends JavaPlugin {
         File databaseFile = new File(getDataFolder(), "nvus_prison.db");
         if (!databaseFile.exists()) {
             dbManager.initDatabase(); // Correct use of dbManager after initialization
-            getLogger().info("SQLite database initialized successfully.");
+            getLogger().info("Database initialized successfully.");
         } else {
             getLogger().info("SQLite database already exists.");
         }
@@ -58,6 +62,8 @@ public final class PrisonSetup extends JavaPlugin {
         configManager.saveDefaultConfig("config.yml");
         configManager.saveDefaultConfig("banned_items.yml");
         configManager.saveDefaultConfig("auto_switch.yml");
+
+        //FileConfiguration config = configManager.getConfig("config.yml");
 
         // Register Event Listeners
         getServer().getPluginManager().registerEvents(new PlayerSpawn(configManager), this);
@@ -76,6 +82,11 @@ public final class PrisonSetup extends JavaPlugin {
         // Tool Damage
         ToolDamageListener toolDamageListener = new ToolDamageListener(configManager);
         getServer().getPluginManager().registerEvents(toolDamageListener, this);
+
+        // TreeFarm Boolean Check
+        if (configManager.getBoolean("config.yml", "TreeFarm", false)) {
+            getServer().getPluginManager().registerEvents(new TreeFarmListener(this), this);
+        }
 
         // Successful Startup/Enable
         getLogger().info(ChatColor.translateAlternateColorCodes('&',"&a&lNVus Prison Setup has been successfully enabled!"));
@@ -102,9 +113,9 @@ public final class PrisonSetup extends JavaPlugin {
     @Override
     public void onDisable() {
         // Save the config when disabling the plugin
-        configManager.saveConfig("config.yml");
-        configManager.saveConfig("banned_items.yml");
-        configManager.saveConfig("auto_switch.yml");
+//        configManager.saveConfig("config.yml");
+//        configManager.saveConfig("banned_items.yml");
+//        configManager.saveConfig("auto_switch.yml");
 
         // Log a success message
         getLogger().info(ChatColor.translateAlternateColorCodes('&',"&c&lNVus Prison Setup has been successfully disabled!"));

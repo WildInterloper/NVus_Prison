@@ -2,6 +2,7 @@ package me.nvus.nvus_prison_setup.Gangs;
 
 import java.util.UUID;
 import me.nvus.nvus_prison_setup.Database.DatabaseManager;
+import me.nvus.nvus_prison_setup.Gangs.GangInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -17,6 +18,12 @@ public class GangManager {
         CAPO,
         MEMBER
     }
+
+    public GangInfo getGangInfo(String gangName) {
+        // Fetch gang information from the database through DatabaseManager
+        return dbManager.getGangInfo(gangName);
+    }
+
 
     // Assuming a simplified model where the next rank is simply the next ordinal in the enum
     public String getNextRank(String currentRank) {

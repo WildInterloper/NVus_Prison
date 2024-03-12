@@ -4,22 +4,39 @@
 #                                www.FNGnation.net                                     #
 #                          Discord: FNGnation.net/discord                              #
 #======================================================================================#
+
 # Remember to give prisoner ranks/groups the permission ' nvus.prisoner ' and negate that permission for any
 # players that are not or no longer considered a prisoner.
 
+########################################################################################
+#                           AUTO PICKUP & SWITCH SETTINGS                              #
+########################################################################################
+
 # Should prisoners auto pickup blocks they have mined?
 # Use /nvus autopickup true|false to toggle this in-game! (Requires permission: nvus.admin)
-# DO NOT TURN THIS ON WHEN RUNNING THIS PLUGIN ON A LIVE/PRODUCTION SERVER! There may be bugs!
+# Can also use /nvus menu for a GUI to toggle this and other features on/off!
+# TEST THIS FEATURE HEAVILY before setting this to true on a live/production server! It does currently check if
+# player has break permissions for the block they are mining, but it is still a work in progress.
+# It checks WorldGuard if player is region owner, a member of region or if player has the WorldGuard bypass permission etc.
 AutoPickup: false
+
 # Should prisoners be able to auto switch to the correct tool for whatever they are mining?
 #i.e. If hitting dirt/clay with a pickaxe, they will auto switch to a shovel (if in their quickbar)
 # Use /nvus autoswitch true|false to toggle this in-game! (Requires permission: nvus.admin)
 AutoSwitch: true
 
+########################################################################################
+#                                   ARMOR SETTINGS                                     #
+########################################################################################
+
 # Should prisoners be given a default prisoner armor set (orange leather armor) when they join the server?
 PrisonerArmor: true
 # Should prisoners be able to remove/change their default prisoner armor?
 RestrictArmor: true
+
+########################################################################################
+#                             PRISONER TOOL SETTINGS                                   #
+########################################################################################
 
 # What tools are considered Prisoner Tools? These are used for the ToolDamage toggle and for auto switching feature!
 # See auto_switch.yml to set up which blocks trigger the auto switch to these tools.
@@ -30,12 +47,32 @@ PrisonerTools:
 # When set to FALSE it will prevent Prisoner Tools from receiving damage when mining etc.
 ToolDamage: false
 
+########################################################################################
+#                                   TREE FARM FEATURE                                  #
+########################################################################################
+
+# Do you want the TreeFarm features to be enabled? Players with nvus.prisoner permission will be able to use this feature.
+# Hitting the bottom block of any tree will destroy the tree and place the logs in the players inventory.
+# It will then place down a sapling in the same spot where the tree base was destroyed.
+TreeFarm: true
+
+########################################################################################
+#                                   DATABASE SETTINGS                                  #
+########################################################################################
+
 # Database Settings
-# MySQL or SQLite (local)
-Database.Type: MySQL
+# Type can be either MySQL or SQLite (local)
+Database.Type: SQLite
+# The following is only needed if using MySQL
 host: 0.0.0.0
 port: 3306
 database: nvus_prison
 username: username
 password: password
 
+
+########################################################################################
+#                                   DO NOT TOUCH                                       #
+########################################################################################
+
+ConfigVersion: 1.1 # Do not touch this! It can and probably will break the plugin if you do!

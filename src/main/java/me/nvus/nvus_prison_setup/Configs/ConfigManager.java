@@ -37,6 +37,14 @@ public class ConfigManager {
         return configs.get(configName);
     }
 
+    public boolean getBoolean(String configName, String path, boolean defaultValue) {
+        FileConfiguration config = getConfig(configName);
+        if (config == null) {
+            return defaultValue;
+        }
+        return config.getBoolean(path, defaultValue);
+    }
+
     public void saveConfig(String configName) {
         FileConfiguration config = getConfig(configName);
         File configFile = getConfigFile(configName);

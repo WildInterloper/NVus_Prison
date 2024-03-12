@@ -6,8 +6,12 @@ prefix: NVus Prison
 authors: [never2nv]
 website: https://FNGnation.net
 
-depends:
+depend:
   - WorldGuard
+
+softdepend:
+  - WorldEdit
+  - FastAsyncWorldEdit
 
 commands:
   nvus:
@@ -26,7 +30,8 @@ commands:
   gang:
     description: Base command for gang-related actions.
     usage: |
-      /gang create <name/tag> - Create a gang
+      /gang create <name/tag> - Create a gang.
+      /gang list - View your Gang info.
       /gang invite <player> - Invite a player to your gang.
       /gang accept - Accept a Gang Invite.
       /gang deny - Decline a Gang Invite.

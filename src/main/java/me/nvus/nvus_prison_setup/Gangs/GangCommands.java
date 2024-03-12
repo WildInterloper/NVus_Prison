@@ -50,6 +50,8 @@ public class GangCommands implements CommandExecutor {
                 return handleGangKick(sender, args);
             case "disband":
                 return handleGangDisband(sender, args);
+            case "list":
+                return handleGangList(sender, args);
             default:
                 player.sendMessage(ChatColor.RED + "Invalid gang command. Use /gang help for a list of commands.");
                 return true;
@@ -200,16 +202,16 @@ public class GangCommands implements CommandExecutor {
         message.append(ChatColor.LIGHT_PURPLE).append("NVus Prison Gangs:\n");
         message.append(ChatColor.DARK_GRAY).append("=======\n");
         message.append(ChatColor.GREEN).append("/gang create <name/tag> - Use this to create a gang.\n");
+        message.append(ChatColor.GREEN).append("/gang list - Get info about your current gang.\n");
         message.append(ChatColor.GREEN).append("/gang invite <player> - Invite player to your gang.\n");
+        message.append(ChatColor.GREEN).append("\n");
         message.append(ChatColor.GREEN).append("/gang accept - Accept an invite to a gang.\n");
         message.append(ChatColor.GREEN).append("/gang deny - Deny an invite to a gang.\n");
         message.append(ChatColor.GREEN).append("/gang leave - Leave your current gang.\n");
         message.append(ChatColor.GREEN).append("\n");
-        message.append(ChatColor.YELLOW).append("COMING SOON:\n");
-        message.append(ChatColor.YELLOW).append("=============\n");
-        message.append(ChatColor.GREEN).append("/gang disband - Delete/Remove your gang.\n");
         message.append(ChatColor.GREEN).append("/gang promote <player> - Promote a gang member to a higher rank.\n");
         message.append(ChatColor.GREEN).append("/gang kick <player> - Kick a member from your gang.\n");
+        message.append(ChatColor.GREEN).append("/gang disband - Delete/Remove your gang.\n");
         message.append(ChatColor.GREEN).append("\n");
 
         player.sendMessage(message.toString());
@@ -314,4 +316,34 @@ public class GangCommands implements CommandExecutor {
         }
         return true;
     }
+
+    private boolean handleGangList(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage("This command can only be used by players.");
+            return true;
+        }
+
+        Player player = (Player) sender;
+        String gangName = gangManager.getCurrentGangName(player.getUniqueId());
+
+        if (gangName == null) {
+            player.sendMessage("You are not in a gang.");
+            return true;
+        }
+
+        // Assuming we have a method in GangManager to get detailed info
+        GangInfo gangInfo = gangManager.getGangInfo(gangName);
+        if (gangInfo == null) {
+            player.sendMessage("Gang information could not be retrieved.");
+            return true;
+        }
+
+        player.sendMessage(ChatColor.GREEN + "Gang Name: " + ChatColor.WHITE + gangInfo.getName());
+        player.sendMessage(ChatColor.GREEN + "Gang Owner: " + ChatColor.WHITE + gangInfo.getOwnerName());
+        player.sendMessage(ChatColor.GREEN + "Total Members: " + ChatColor.WHITE + gangInfo.getMemberCount());
+
+        return true;
+    }
+
+
 }

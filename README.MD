@@ -43,8 +43,13 @@ Currently, the plugin implements the following features, so far:
 
 ## Upcoming Features:
  - [X]  GUI Menu
- - [X]  Toggle Prisoner Tool Damage
- - [ ]  Prison Gangs
- - [ ]  Additional Gang Commands (kick, promote, disband)
- - [ ]  Tree Farm
+ - [X]  Prevent Prisoner Tool Damage (Toggable)
+ - [X]  Setup SQLite/MySQL Database Connections & Configuration
+ - [X]  Prison Gangs **
+ - [X]  Additional Gang Commands (kick, promote, disband) **
+ - [X]  Tree Farm **
+ - [ ]  Spawn with Prisoner Tools (Toggable)
+ - [ ]  Restrict Prisoner Tools from moving in inventory and dropping? (Toggable)
+ - [ ]  Prisoner Tokens or Gems (Tied into Vault?)\
+ ** Implemented but still WIP
 

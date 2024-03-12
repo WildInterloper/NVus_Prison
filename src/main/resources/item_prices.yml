@@ -1,0 +1,26 @@
+#======================================================================================#
+#                             NVus PRISON GOLD EDITION                                 #
+#                                   by never2nv                                        #
+#                                www.FNGnation.net                                     #
+#                          Discord: FNGnation.net/discord                              #
+#======================================================================================#
+
+Prices:
+  - Material: OAK_PLANKS
+    Sell: 1.0
+  - Material: SPRUCE_PLANKS
+    Sell: 1.0
+  - Material: BIRCH_PLANKS
+    Sell: 1.0
+  - Material: JUNGLE_PLANKS
+    Sell: 1.0
+  - Material: ACACIA_PLANKS
+    Sell: 1.0
+  - Material: DARK_OAK_PLANKS
+    Sell: 1.0
+  - Material: Cobblestone
+    Sell: 1.0
+  - Material: Stone
+    Sell: 2.0
+  - Material: Coal
+    Sell: 0.50

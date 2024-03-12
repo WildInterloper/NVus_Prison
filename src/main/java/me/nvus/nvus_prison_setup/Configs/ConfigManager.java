@@ -14,6 +14,8 @@ public class ConfigManager {
     private final Map<String, FileConfiguration> configs;
     private final Map<String, File> configFiles;
 
+    private FileConfiguration itemPricesConfig;
+
     public ConfigManager(JavaPlugin plugin) {
         this.plugin = plugin;
         this.configs = new HashMap<>();
@@ -69,5 +71,22 @@ public class ConfigManager {
             configFiles.put(configName, configFile);
         }
         return configFiles.get(configName);
+    }
+
+    // ITEM CONFIGURATION
+    public void loadItemPricesConfig(File dataFolder) {
+        File file = new File(dataFolder, "item_prices.yml");
+        if (!file.exists()) {
+            try {
+                file.createNewFile(); // Create the file if it doesn't exist
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        itemPricesConfig = YamlConfiguration.loadConfiguration(file);
+    }
+
+    public FileConfiguration getItemPricesConfig() {
+        return itemPricesConfig;
     }
 }

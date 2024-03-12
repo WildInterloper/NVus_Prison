@@ -9,7 +9,7 @@
 # players that are not or no longer considered a prisoner.
 
 ########################################################################################
-#                           AUTO PICKUP & SWITCH SETTINGS                              #
+#                                  AUTO SETTINGS                                       #
 ########################################################################################
 
 # Should prisoners auto pickup blocks they have mined?
@@ -24,6 +24,14 @@ AutoPickup: false
 #i.e. If hitting dirt/clay with a pickaxe, they will auto switch to a shovel (if in their quickbar)
 # Use /nvus autoswitch true|false to toggle this in-game! (Requires permission: nvus.admin)
 AutoSwitch: true
+
+# Allow players to auto sell items as they are mining them
+AutoSell: true
+# Allows players to use /sellall to manually sell all elgible items in their inventory, regardless if AutoSell is enabled.
+# Setting this to false will disable the feature & command completely.
+SellAll: true
+# You can see material prices in the item_pricing.yml file or in-game using /sellprice <price> with an item in your hand.
+# Only players/prisoners with the permission nvus.prisoner can use the /sellprice command and autosell toggle.
 
 ########################################################################################
 #                                   ARMOR SETTINGS                                     #

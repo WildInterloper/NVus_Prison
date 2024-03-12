@@ -13,11 +13,16 @@ import me.nvus.nvus_prison_setup.Placeholders.GangPlaceholders;
 import me.nvus.nvus_prison_setup.Updater.UpdateChecker;
 import me.nvus.nvus_prison_setup.Listeners.ToolDamageListener;
 import me.nvus.nvus_prison_setup.TreeFarm.TreeFarmListener;
+import me.nvus.nvus_prison_setup.AutoSell.SellManager;
 // Database
 import me.nvus.nvus_prison_setup.Database.DatabaseManager;
 // Gangs
 import me.nvus.nvus_prison_setup.Gangs.GangCommands;
 import me.nvus.nvus_prison_setup.Gangs.GangManager;
+
+// Vault
+import net.milkbowl.vault.economy.Economy;
+import org.bukkit.plugin.RegisteredServiceProvider;
 
 // Bukkit
 import org.bukkit.Bukkit;
@@ -37,6 +42,8 @@ public final class PrisonSetup extends JavaPlugin {
     private ConfigManager configManager;
     private DatabaseManager dbManager;
     private GangManager gangManager; // Added reference to GangManager
+
+    private static Economy econ = null; // Vault / Economy
 
     @Override
     public void onEnable() {
@@ -64,6 +71,13 @@ public final class PrisonSetup extends JavaPlugin {
         configManager.saveDefaultConfig("banned_items.yml");
         configManager.saveDefaultConfig("auto_switch.yml");
 
+        // Check if Vault is installed, it's a hard dependency so disable plugin if not installed!
+        if (!setupEconomy()) {
+            getLogger().severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
         //FileConfiguration config = configManager.getConfig("config.yml");
 
         // Register Event Listeners
@@ -79,6 +93,22 @@ public final class PrisonSetup extends JavaPlugin {
         // Register the Gangs placeholder expansion
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new GangPlaceholders(gangManager).register();
+        }
+
+        // Register the Auto Sell and Sell All Listeners
+        boolean autoSellEnabled = configManager.getConfig("config.yml").getBoolean("AutoSell", true);
+        boolean sellAllEnabled = configManager.getConfig("config.yml").getBoolean("SellAll", true);
+        SellManager sellManager = new SellManager(configManager);
+
+        // If they are true, register the commands.
+        if (autoSellEnabled) {
+            // Register the autosell command.
+            this.getCommand("autosell").setExecutor(sellManager);
+        }
+        // If they are true, register the commands.
+        if (sellAllEnabled) {
+            // Register the sellall command.
+            this.getCommand("sellall").setExecutor(sellManager);
         }
 
         // Settings Menu
@@ -124,6 +154,23 @@ public final class PrisonSetup extends JavaPlugin {
 
         // Log a success message
         getLogger().info(ChatColor.translateAlternateColorCodes('&',"&c&lNVus Prison Setup has been successfully disabled!"));
+    }
+
+    // Vault Stuff
+    private boolean setupEconomy() {
+        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+            return false;
+        }
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) {
+            return false;
+        }
+        econ = rsp.getProvider();
+        return econ != null;
+    }
+
+    public static Economy getEconomy() {
+        return econ;
     }
 
     public ConfigManager getConfigManager() {

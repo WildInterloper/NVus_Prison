@@ -70,6 +70,7 @@ public final class PrisonSetup extends JavaPlugin {
         configManager.saveDefaultConfig("config.yml");
         configManager.saveDefaultConfig("banned_items.yml");
         configManager.saveDefaultConfig("auto_switch.yml");
+        configManager.saveDefaultConfig("item_prices.yml");
 
         // Check if Vault is installed, it's a hard dependency so disable plugin if not installed!
         if (!setupEconomy()) {

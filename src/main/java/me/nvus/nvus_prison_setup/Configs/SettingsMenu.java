@@ -126,8 +126,9 @@ public class SettingsMenu implements Listener {
         configManager.reloadConfig("config.yml");
         configManager.reloadConfig("auto_switch.yml");
         configManager.reloadConfig("banned_items.yml");
-        configManager.saveConfig("config.yml");
-        player.sendMessage(ChatColor.GREEN + "Configuration files reloaded.");
+        configManager.reloadConfig("item_prices.yml");
+        //configManager.saveConfig("config.yml");
+        player.sendMessage(ChatColor.GREEN + "[NVus Prison] : Configuration files reloaded!");
         player.closeInventory();
     }
 }

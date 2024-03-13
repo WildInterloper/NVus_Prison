@@ -43,3 +43,13 @@ commands:
       /gang promote <player> - Promote a player to a higher rank.
       /gang demote <player> - Demote a player to a lower rank.
     aliases: [gangs]
+  sellall:
+    description: Sell all eligible items in your inventory.
+    usage: |
+      /sellall - Sell all eligible items in your inventory.
+    aliases: [selleverything]
+  autosell:
+    description: Toggle auto selling all eligible items in your inventory.
+    usage: |
+      /autosell - Toggle auto selling all eligible items in your inventory.
+    aliases: [ automaticsell ]

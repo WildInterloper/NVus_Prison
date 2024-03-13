@@ -22,17 +22,6 @@ public class AutoSellListener implements Listener {
         if (!player.hasPermission("nvus.prisoner") || !sellManager.isAutoSellEnabled(player)) {
             return;
         }
-
-        Block block = event.getBlock();
-        ItemStack tool = player.getInventory().getItemInMainHand();
-
-        block.getDrops(tool).forEach(drop -> {
-            Material dropType = drop.getType();
-            if (sellManager.isSellable(dropType)) {
-                sellManager.sellBlockDrop(player, dropType, drop.getAmount());
-                block.setType(Material.AIR); // Remove the block after "selling" its drop
-                event.setDropItems(false); // Prevent dropping the item
-            }
-        });
+        sellManager.sellItems(player);
     }
 }

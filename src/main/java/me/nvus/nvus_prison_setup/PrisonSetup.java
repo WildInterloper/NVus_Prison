@@ -14,6 +14,7 @@ import me.nvus.nvus_prison_setup.Updater.UpdateChecker;
 import me.nvus.nvus_prison_setup.Listeners.ToolDamageListener;
 import me.nvus.nvus_prison_setup.TreeFarm.TreeFarmListener;
 import me.nvus.nvus_prison_setup.AutoSell.SellManager;
+import me.nvus.nvus_prison_setup.AutoSell.Listeners.AutoSellListener;
 // Database
 import me.nvus.nvus_prison_setup.Database.DatabaseManager;
 // Gangs
@@ -72,14 +73,14 @@ public final class PrisonSetup extends JavaPlugin {
         configManager.saveDefaultConfig("auto_switch.yml");
         configManager.saveDefaultConfig("item_prices.yml");
 
+        configManager.loadItemPricesConfig(this.getDataFolder());
+
         // Check if Vault is installed, it's a hard dependency so disable plugin if not installed!
         if (!setupEconomy()) {
             getLogger().severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
-
-        //FileConfiguration config = configManager.getConfig("config.yml");
 
         // Register Event Listeners
         getServer().getPluginManager().registerEvents(new PlayerSpawn(configManager), this);
@@ -96,15 +97,20 @@ public final class PrisonSetup extends JavaPlugin {
             new GangPlaceholders(gangManager).register();
         }
 
+
+
         // Register the Auto Sell and Sell All Listeners
         boolean autoSellEnabled = configManager.getConfig("config.yml").getBoolean("AutoSell", true);
         boolean sellAllEnabled = configManager.getConfig("config.yml").getBoolean("SellAll", true);
         SellManager sellManager = new SellManager(configManager);
+        this.getCommand("setprice").setExecutor(sellManager);
 
         // If they are true, register the commands.
         if (autoSellEnabled) {
             // Register the autosell command.
             this.getCommand("autosell").setExecutor(sellManager);
+            // Register AutoSell Listener then too!
+            getServer().getPluginManager().registerEvents(new AutoSellListener(sellManager), this);
         }
         // If they are true, register the commands.
         if (sellAllEnabled) {
@@ -120,7 +126,7 @@ public final class PrisonSetup extends JavaPlugin {
         getServer().getPluginManager().registerEvents(toolDamageListener, this);
 
         // TreeFarm Boolean Check
-        if (configManager.getBoolean("config.yml", "TreeFarm", false)) {
+        if (configManager.getBoolean("config.yml", "TreeFarm", true)) {
             getServer().getPluginManager().registerEvents(new TreeFarmListener(this), this);
         }
 
@@ -130,13 +136,27 @@ public final class PrisonSetup extends JavaPlugin {
         // UPDATE CHECKER
         new UpdateChecker(this, 12345).getVersion(version -> {
             if (!this.getDescription().getVersion().equals(version)) {
-                getLogger().info("There is a new update available for NVus Prison Setup! Grab it from SpigotMC here: https://www.spigotmc.org/resources/nvus-prison-setup.115441/");
+                getLogger().info("  ");
+                getLogger().info("=====================================================");
+                getLogger().info("  ");
+                getLogger().info("An update for NVus Prison Lite is available! Grab it from:");
+                getLogger().info("SpigotMC: https://www.spigotmc.org/resources/nvus-prison-setup.115441/");
+                getLogger().info("BuiltByBit: https://builtbybit.com/resources/nvus-prison-lite.40514/");
+                getLogger().info("  ");
+                getLogger().info("=====================================================");
+                getLogger().info("  ");
                 Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
                     for (Player player : Bukkit.getOnlinePlayers()) {
                         if (player.isOp() || player.hasPermission("nvus.admin")) {
+                            player.sendMessage(ChatColor.RED + "  ");
                             player.sendMessage(ChatColor.RED + "=====================================================");
-                            player.sendMessage(ChatColor.YELLOW + "An update for NVus Prison Setup is available! Grab it from SpigotMC here: https://www.spigotmc.org/resources/nvus-prison-setup.115441/");
+                            player.sendMessage(ChatColor.RED + "  ");
+                            player.sendMessage(ChatColor.YELLOW + "An update for NVus Prison Lite is available! Grab it from:");
+                            player.sendMessage(ChatColor.YELLOW + "SpigotMC: https://www.spigotmc.org/resources/nvus-prison-setup.115441/");
+                            player.sendMessage(ChatColor.YELLOW + "BuiltByBit: https://builtbybit.com/resources/nvus-prison-lite.40514/");
+                            player.sendMessage(ChatColor.RED + "  ");
                             player.sendMessage(ChatColor.RED + "=====================================================");
+                            player.sendMessage(ChatColor.RED + "  ");
                         }
                     }
                 }, 20L * 60);

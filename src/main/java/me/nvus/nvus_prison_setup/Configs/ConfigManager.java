@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
+
 
 public class ConfigManager {
     private final JavaPlugin plugin;
@@ -84,6 +86,41 @@ public class ConfigManager {
             }
         }
         itemPricesConfig = YamlConfiguration.loadConfiguration(file);
+    }
+
+    public void reorderItemPrices() {
+        File itemPricesFile = new File(getDataFolder(), "item_prices.yml");
+        FileConfiguration config = YamlConfiguration.loadConfiguration(itemPricesFile);
+        FileConfiguration newConfig = new YamlConfiguration();
+
+        // Using TreeMap to automatically sort the keys in natural order
+        Map<String, Object> sortedMap = new TreeMap<>();
+
+        // Assuming your structure is directly under the root
+        if (config.getConfigurationSection("Prices") != null) {
+            for (String key : config.getConfigurationSection("Prices").getKeys(false)) {
+                double price = config.getDouble("Prices." + key + ".Sell");
+                // Storing in a sorted map
+                sortedMap.put(key, price);
+            }
+
+            // Clear the existing "Prices" section
+            config.set("Prices", null);
+
+            // Repopulate the "Prices" section in sorted order
+            for (Map.Entry<String, Object> entry : sortedMap.entrySet()) {
+                config.set("Prices." + entry.getKey() + ".Sell", entry.getValue());
+            }
+
+            // Save the sorted configuration back to the file
+            try {
+                config.save(itemPricesFile);
+                System.out.println("Saved item_prices.yml with materials in alphabetical order.");
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.err.println("Failed to save item_prices.yml in alphabetical order.");
+            }
+        }
     }
 
     public FileConfiguration getItemPricesConfig() {

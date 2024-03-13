@@ -104,6 +104,27 @@ public class CommandListener implements CommandExecutor {
                 }
                 handleToggleConfigCommand(sender, "ToolDamage", args[1]);
                 break;
+            case "treefarm": // New case for toggling RestrictArmor
+                if (args.length < 2) {
+                    sender.sendMessage(ChatColor.RED + "Usage: /nvus treefarm <true|false>");
+                    return true;
+                }
+                handleToggleConfigCommand(sender, "TreeFarm", args[1]);
+                break;
+            case "autosell": // New case for toggling RestrictArmor
+                if (args.length < 2) {
+                    sender.sendMessage(ChatColor.RED + "Usage: /nvus autosell <true|false>");
+                    return true;
+                }
+                handleToggleConfigCommand(sender, "AutoSell", args[1]);
+                break;
+            case "sellall": // New case for toggling RestrictArmor
+                if (args.length < 2) {
+                    sender.sendMessage(ChatColor.RED + "Usage: /nvus sellall <true|false>");
+                    return true;
+                }
+                handleToggleConfigCommand(sender, "SellAll", args[1]);
+                break;
             default:
                 sender.sendMessage(ChatColor.RED + "Invalid command. Use /nvus for help.");
                 return true;
@@ -116,6 +137,7 @@ public class CommandListener implements CommandExecutor {
         configManager.reloadConfig("config.yml");
         configManager.reloadConfig("auto_switch.yml");
         configManager.reloadConfig("banned_items.yml");
+        configManager.reloadConfig("item_prices.yml");
         sender.sendMessage(ChatColor.GREEN + "Configuration files reloaded.");
     }
 

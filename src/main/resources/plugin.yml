@@ -27,6 +27,8 @@ commands:
       /nvus prisonerarmor <true|false> - Toggles giving prisoners armor on join.
       /nvus restrictarmor <true|false> - Toggles the restriction on changing prisoner armor.
       /nvus tooldamage <true|false> - Toggle if prisoner tools receive damage. FALSE = No Damage.
+      /nvus autosell <true|false> - Toggle if prisoners can auto toggle auto selling of items as they are mined.
+      /nvus sellall <true|false> - Toggle if prisoners can use /sellall to manually sell items form inventory.
     aliases: [prison]
 
   gang:
@@ -53,3 +55,19 @@ commands:
     usage: |
       /autosell - Toggle auto selling all eligible items in your inventory.
     aliases: [ automaticsell ]
+  setprice:
+    description: Set the price of the block being held in item_prices.yml.
+    usage: |
+      /setprice <price> - Set the price of the block being held in item_prices.yml.
+    aliases: [ setblockprice ]
+
+permissions:
+  nvus.admin:
+    description: Allows access to NVus Prison admin commands.
+    default: op
+  nvus.gang.create:
+    description: Allows creating a gang.
+    default: true
+  nvus.prisoner:
+    description: Allows access to NVus Prison prisoner features ie AutoSwitch,AutoSell,Restricting Armor etc.
+    default: true

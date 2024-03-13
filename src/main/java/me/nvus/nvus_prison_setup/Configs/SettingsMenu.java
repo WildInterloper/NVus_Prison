@@ -31,17 +31,23 @@ public class SettingsMenu implements Listener {
     }
 
     public void openSettingsMenu(Player player) {
-        Inventory inv = Bukkit.createInventory(null, 9, ChatColor.DARK_GREEN + "NVus Prison Settings");
+        Inventory inv = Bukkit.createInventory(null, 18, ChatColor.DARK_GREEN + "NVus Prison Settings");
         FileConfiguration config = configManager.getConfig("config.yml");
 
         inv.setItem(0, createToggleItem(Material.LEATHER_CHESTPLATE, "Toggle PrisonerArmor", config.getBoolean("PrisonerArmor", true)));
         inv.setItem(1, createToggleItem(Material.IRON_CHESTPLATE, "Toggle RestrictArmor", config.getBoolean("RestrictArmor", true)));
 
-        inv.setItem(3, createToggleItem(Material.HOPPER, "Toggle AutoPickup", config.getBoolean("AutoPickup", true)));
-        inv.setItem(4, createToggleItem(Material.LEVER, "Toggle AutoSwitch", config.getBoolean("AutoSwitch", false)));
+        inv.setItem(3, createToggleItem(Material.HOPPER, "Toggle AutoPickup", config.getBoolean("AutoPickup", false)));
+        inv.setItem(4, createToggleItem(Material.LEVER, "Toggle AutoSwitch", config.getBoolean("AutoSwitch", true)));
+        inv.setItem(5, createToggleItem(Material.IRON_PICKAXE, "Toggle ToolDamage", config.getBoolean("ToolDamage", false)));
 
-        inv.setItem(6, createToggleItem(Material.IRON_PICKAXE, "Toggle ToolDamage", config.getBoolean("ToolDamage", false)));
-        inv.setItem(7, createToggleItem(Material.BOOK, "Reload Configs", false));
+        inv.setItem(8, createToggleItem(Material.BOOK, "Reload Configs", false));
+
+        // Second Row
+        inv.setItem(9, createToggleItem(Material.GOLD_INGOT, "Toggle AutoSell", config.getBoolean("AutoSell", true)));
+        inv.setItem(10, createToggleItem(Material.GOLD_BLOCK, "Toggle SellAll", config.getBoolean("SellAll", true)));
+
+        inv.setItem(11, createToggleItem(Material.OAK_SAPLING, "Toggle TreeFarm", config.getBoolean("TreeFarm", true)));
 
         player.openInventory(inv);
     }
@@ -94,6 +100,12 @@ public class SettingsMenu implements Listener {
                 toggleConfigOption(player, "AutoPickup");
             } else if (displayName.contains("Toggle AutoSwitch")) {
                 toggleConfigOption(player, "AutoSwitch");
+            } else if (displayName.contains("Toggle AutoSell")) {
+                toggleConfigOption(player, "AutoSell");
+            } else if (displayName.contains("Toggle SellAll")) {
+                toggleConfigOption(player, "SellAll");
+            } else if (displayName.contains("Toggle TreeFarm")) {
+                toggleConfigOption(player, "TreeFarm");
             } else if (displayName.contains("Reload Configs")) {
                 reloadConfigs(player);
             }

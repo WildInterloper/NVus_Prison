@@ -24,6 +24,11 @@ Useful features for Minecraft Prison Servers & Then Some :P
  - [x]  Spawn with Prisoner Tools (Toggable) **
  - [x]  Restrict Prisoner Tools from moving in inventory and dropping? (Toggable) **
  - [ ]  Prisoner Tokens or Gems (Tied into Vault?)\
+ - [ ]  Random Events - Like Prisoner Riots etc
+ - [ ]  Warden Role - A temporary positon players can hold
+ - [ ]  Contraband - List items for roleplay as contraband
+ - [ ]  Prison Guards - Useful features for prison guards
+ - [ ]  Confinement - Send naughty prisoners to solitary confinement
  ** Implemented but still WIP
 
 
@@ -32,6 +37,7 @@ Useful features for Minecraft Prison Servers & Then Some :P
 ## Features
 ![NVus Prison Lite Info](https://git.fngnation.net/never2nv/NVus_Prison/raw/branch/main/assets/plugin_info.png)
 ![NVus Prison Lite Info 2](https://git.fngnation.net/never2nv/NVus_Prison/raw/branch/main/assets/plugin_info_2.png)
+![NVus Prison Lite Info 3](https://git.fngnation.net/never2nv/NVus_Prison/raw/branch/main/assets/plugin_info_3.png)
 
 Currently, the plugin implements the following features, so far:
 

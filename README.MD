@@ -21,8 +21,8 @@ Useful features for Minecraft Prison Servers & Then Some :P
  - [x]  SellAll Command (Toggable)
  - [X]  Rankup Commands **
  - [x]  MySQL/SQLite Rankup Support **
- - [ ]  Spawn with Prisoner Tools (Toggable)
- - [ ]  Restrict Prisoner Tools from moving in inventory and dropping? (Toggable)
+ - [x]  Spawn with Prisoner Tools (Toggable) **
+ - [x]  Restrict Prisoner Tools from moving in inventory and dropping? (Toggable) **
  - [ ]  Prisoner Tokens or Gems (Tied into Vault?)\
  ** Implemented but still WIP
 

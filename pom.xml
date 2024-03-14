@@ -6,7 +6,7 @@
 
   <groupId>me.NVus</groupId>
   <artifactId>NVus_Prison</artifactId>
-  <version>1.0.4</version>
+  <version>1.0.5</version>
   <packaging>jar</packaging>
 
   <name>NVus_PrisonSetup</name>

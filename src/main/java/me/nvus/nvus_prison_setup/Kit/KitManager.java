@@ -21,14 +21,29 @@ public class KitManager {
     }
 
     public boolean isPrisonerKitItem(ItemStack item) {
+        if (item == null || !item.hasItemMeta()) {
+            return false;
+        }
+
         FileConfiguration config = configManager.getConfig("config.yml");
         List<Map<?, ?>> kitItems = config.getMapList("PrisonerKitItems");
 
-        for (Map<?, ?> itemSpec : kitItems) {
-            String itemName = (String) itemSpec.get("item");
-            Material material = Material.matchMaterial(itemName);
+        ItemMeta meta = item.getItemMeta();
+        String itemName = meta.hasDisplayName() ? meta.getDisplayName() : "";
+        List<String> itemLore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
 
-            if (material != null && item.getType() == material) {
+        for (Map<?, ?> itemSpec : kitItems) {
+            String configItemName = ChatColor.translateAlternateColorCodes('&', (String) itemSpec.get("name"));
+            List<String> configItemLore = new ArrayList<>();
+            if (itemSpec.get("lore") != null) {
+                for (String line : (List<String>) itemSpec.get("lore")) {
+                    configItemLore.add(ChatColor.translateAlternateColorCodes('&', line));
+                }
+            }
+
+            // Check if the item matches the config item name ANNNND lore
+            // Just to be double sure we're saying yes this is a prioner kit item on the right items!
+            if (itemName.equals(configItemName) && itemLore.equals(configItemLore)) {
                 return true;
             }
         }
@@ -50,6 +65,12 @@ public class KitManager {
 
             ItemStack item = new ItemStack(material);
             ItemMeta meta = item.getItemMeta();
+
+            // Set the display name if available
+            if (itemSpec.containsKey("name")) {
+                String name = ChatColor.translateAlternateColorCodes('&', (String) itemSpec.get("name"));
+                meta.setDisplayName(name);
+            }
 
             // Set lore if available
             if (itemSpec.containsKey("lore")) {
@@ -80,6 +101,8 @@ public class KitManager {
                 player.getInventory().addItem(item);
             }
         }
-
     }
+
+
+
 }

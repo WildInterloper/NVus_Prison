@@ -63,35 +63,39 @@ ToolDamage: false
 PrisonerKit: True
 # If PrisonerKit above is true: What items should be in the prisoner kit?
 PrisonerKitItems:
-  - item: IRON_PICKAXE
-    lore:
-      - "&7Standard issue"
-      - "&7Prisoner's Pickaxe"
-    slot: 0
-    enchantments:
-      - EFFICIENCY:3
-      - UNBREAKING:2
-  - item: IRON_AXE
-    lore:
-      - "&7Standard issue"
-      - "&7Prisoner's Axe"
-    slot: 1
-    enchantments:
-      - SHARPNESS:2
-  - item: IRON_SHOVEL
-    lore:
-      - "&7Standard issue"
-      - "&7Prisoner's Shovel"
-    slot: 2
-    enchantments:
-      - SILK_TOUCH:1
   - item: IRON_SWORD
+    name: "&7Prisoner's Sword"
     lore:
       - "&7Standard issue"
       - "&7Prisoner's Sword"
+    slot: 0
+    enchantments:
+      DAMAGE_ALL: 3
+  - item: IRON_PICKAXE
+    name: "&7Prisoner's Pickaxe"
+    lore:
+      - "&7Standard issue"
+      - "&7Prisoner's Pickaxe"
+    slot: 1
+    enchantments:
+      EFFICIENCY: 3
+      UNBREAKING: 2
+  - item: IRON_AXE
+    name: "&7Prisoner's Axe"
+    lore:
+      - "&7Standard issue"
+      - "&7Prisoner's Axe"
+    slot: 2
+    enchantments:
+      SHARPNESS: 2
+  - item: IRON_SHOVEL
+    name: "&7Prisoner's Shovel"
+    lore:
+      - "&7Standard issue"
+      - "&7Prisoner's Shovel"
     slot: 3
     enchantments:
-      - DAMAGE_ALL:3
+      SILK_TOUCH: 1
 # Should players be able to drop their prisoner kit items?
 RestrictKitDrop: True
 # Should prisoners be able to move their prisoner kit items around in their inventory?

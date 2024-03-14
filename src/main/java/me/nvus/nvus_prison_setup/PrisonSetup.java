@@ -49,6 +49,8 @@ public final class PrisonSetup extends JavaPlugin {
     private DatabaseManager dbManager;
     private GangManager gangManager;
 
+    private KitManager kitManager;
+
     private RankManager rankManager;
 
     private static Economy econ = null; // Vault / Economy
@@ -160,9 +162,12 @@ public final class PrisonSetup extends JavaPlugin {
 
         // Prisoner Kits
         boolean prisonerKitEnabled = configManager.getConfig("config.yml").getBoolean("PrisonerKit", true);
-        if (prisonerRanksEnabled) {
-            KitManager kitManager = new KitManager(configManager);
-            KitListener kitListener = new KitListener(configManager, kitManager);
+        if (prisonerKitEnabled) {
+            // Initialize KitManager with the instance of ConfigManager
+            this.kitManager = new KitManager(this.configManager);
+
+            // Initialize KitListener with ConfigManager and KitManager, then register it
+            KitListener kitListener = new KitListener(this.configManager, this.kitManager);
             getServer().getPluginManager().registerEvents(kitListener, this);
         }
 
@@ -229,6 +234,10 @@ public final class PrisonSetup extends JavaPlugin {
 
     public static Economy getEconomy() {
         return econ;
+    }
+
+    public KitManager getKitManager() {
+        return kitManager;
     }
 
     public RankManager getRankManager() {

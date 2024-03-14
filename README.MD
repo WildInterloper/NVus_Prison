@@ -14,13 +14,13 @@ Useful features for Minecraft Prison Servers & Then Some :P
  - [X]  Setup SQLite/MySQL Database Connections & Configuration
  - [X]  Prison Gangs **
  - [X]  Additional Gang Commands (kick, promote, disband) **
- - [x]  MySQL/SQLite Gang Support
+ - [x]  MySQL/SQLite Gang Support **
  - [X]  Tree Farm **
  - [x]  Gang PlaceholderAPI support (display Gang Name for chat etc)
  - [x]  AutoSell Toggle (Toggable)
  - [x]  SellAll Command (Toggable)
- - [X]  Rankup Commands
- - [x]  MySQL/SQLite Rankup Support
+ - [X]  Rankup Commands **
+ - [x]  MySQL/SQLite Rankup Support **
  - [ ]  Spawn with Prisoner Tools (Toggable)
  - [ ]  Restrict Prisoner Tools from moving in inventory and dropping? (Toggable)
  - [ ]  Prisoner Tokens or Gems (Tied into Vault?)\

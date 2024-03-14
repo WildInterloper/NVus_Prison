@@ -6,7 +6,7 @@
 #======================================================================================#
 Ranks:
   Default: # DO NOT CHANGE THE NAME 'Default' or this will break the plugin! This is the first/default rank!
-    Cost: 100
+    Cost: 0 # This should always be free, as it's the default rank!
     Commands:
       - broadcast %player% has been processed as a new inmate!
   Tier2:

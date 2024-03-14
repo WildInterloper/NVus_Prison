@@ -21,14 +21,18 @@ commands:
     usage: |
       /nvus reload - Reloads all configuration files.
       /nvus version - Shows the plugin version.
+      /nvus id - Display your username, UUID and send a clickable UUID.
       /nvus menu - Opens the settings menu.
       /nvus autopickup <true|false> - Toggles the auto item pickup feature.
       /nvus autoswitch <true|false> - Toggles the auto tool switch feature.
       /nvus prisonerarmor <true|false> - Toggles giving prisoners armor on join.
       /nvus restrictarmor <true|false> - Toggles the restriction on changing prisoner armor.
       /nvus tooldamage <true|false> - Toggle if prisoner tools receive damage. FALSE = No Damage.
+      /nvus treefarm <true|false> - Toggle the TreeFarm feature for prisoners.
+      /nvus prisonerranks <true|false> - Toggle if prisoners can use the /rankup and /ranks commands.
       /nvus autosell <true|false> - Toggle if prisoners can auto toggle auto selling of items as they are mined.
       /nvus sellall <true|false> - Toggle if prisoners can use /sellall to manually sell items form inventory.
+
     aliases: [prison]
 
   gang:

@@ -10,6 +10,11 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+
 public class CommandListener implements CommandExecutor {
     private final JavaPlugin plugin;
     private final ConfigManager configManager;
@@ -59,6 +64,9 @@ public class CommandListener implements CommandExecutor {
                 break;
             case "version":
                 handleVersionCommand(sender);
+                break;
+            case "id":
+                handleIdCommand(sender);
                 break;
             case "menu":
                 if (!(sender instanceof Player)) {
@@ -145,6 +153,36 @@ public class CommandListener implements CommandExecutor {
         sender.sendMessage(ChatColor.GREEN + "Plugin version: " + plugin.getDescription().getVersion());
     }
 
+    public void handleIdCommand(CommandSender sender) {
+        // Check if the sender is a player
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+
+            // Your existing logic here
+            // For example, sending the player their username and UUID in a simple message
+            player.sendMessage("Your username: " + player.getName());
+            player.sendMessage("Your UUID: " + player.getUniqueId().toString());
+
+            // Now send the clickable UUID message
+            sendClickableUUID(player);
+        } else {
+            // If the command sender is not a player (e.g., console), handle appropriately
+            sender.sendMessage("This command can only be used by a player.");
+        }
+    }
+
+    public void sendClickableUUID(Player player) {
+        String uuid = player.getUniqueId().toString();
+
+        TextComponent message = new TextComponent("Click here to copy your UUID");
+        message.setColor(net.md_5.bungee.api.ChatColor.GOLD);
+        message.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, uuid));
+        message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to copy your UUID").color(net.md_5.bungee.api.ChatColor.YELLOW).create()));
+
+        player.spigot().sendMessage(message);
+    }
+
+
     private void handleToggleConfigCommand(CommandSender sender, String key, String value) {
         boolean boolValue = Boolean.parseBoolean(value);
         FileConfiguration config = configManager.getConfig("config.yml");
@@ -152,5 +190,6 @@ public class CommandListener implements CommandExecutor {
         configManager.saveConfig("config.yml");
         sender.sendMessage(ChatColor.GREEN + key + " set to " + boolValue + ".");
     }
+
 
 }

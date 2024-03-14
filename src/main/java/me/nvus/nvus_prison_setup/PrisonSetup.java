@@ -73,7 +73,8 @@ public final class PrisonSetup extends JavaPlugin {
         // Check if SQLite DB Exists, if not init it
         File databaseFile = new File(getDataFolder(), "nvus_prison.db");
         if (!databaseFile.exists()) {
-            dbManager.initDatabase(); // Correct use of dbManager after initialization
+            dbManager.initGangDatabase(); // Correct use of dbManager after initialization
+            dbManager.initRanksDatabase(); // Correct use of dbManager after initialization
             getLogger().info("Database initialized successfully.");
         } else {
             getLogger().info("SQLite database already exists.");
@@ -140,8 +141,11 @@ public final class PrisonSetup extends JavaPlugin {
         // Ranks Manager
         boolean prisonerRanksEnabled = configManager.getConfig("config.yml").getBoolean("PrisonerRanks", true);
         if (prisonerRanksEnabled) {
+            // Init & Sync Ranks with Database
+            dbManager.initializeAndSyncRanks();
+
             // Initialize RankManager and other initializations
-            rankManager = new RankManager(this);
+            rankManager = new RankManager(dbManager,econ); // Use the corrected dbManager
 
             // Register RankListener
             getServer().getPluginManager().registerEvents(new RankListener(rankManager), this);
@@ -149,6 +153,7 @@ public final class PrisonSetup extends JavaPlugin {
             // Register commands
             this.getCommand("rankup").setExecutor(new RankCommands(this));
             this.getCommand("ranks").setExecutor(new RankCommands(this));
+
         }
 
         // Successful Startup/Enable

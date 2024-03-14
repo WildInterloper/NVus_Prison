@@ -105,10 +105,23 @@ public class SellManager implements CommandExecutor {
         String materialName = material.name();
 
         FileConfiguration itemPricesConfig = configManager.getItemPricesConfig();
-        itemPricesConfig.set("Prices." + materialName + ".Sell", price);
+        // Check if the price is 0, indicating the item should be removed
+        if (price == 0) {
+            // Check if the item already exists in the config
+            if (itemPricesConfig.contains("Prices." + materialName)) {
+                itemPricesConfig.set("Prices." + materialName, null); // Remove the item
+                player.sendMessage(ChatColor.GREEN + "The price of " + materialName + " has been removed.");
+            } else {
+                player.sendMessage(ChatColor.RED + "No price was set for " + materialName + ", nothing to remove.");
+            }
+        } else {
+            itemPricesConfig.set("Prices." + materialName + ".Sell", price);
+            player.sendMessage(ChatColor.GREEN + "The price of " + materialName + " has been set to $" + price + ".");
+        }
+
+        // Save and reload the config regardless of the action taken
         try {
             itemPricesConfig.save(new File(configManager.getDataFolder(), "item_prices.yml"));
-            player.sendMessage(ChatColor.GREEN + "The price of " + materialName + " has been set to $" + price + ".");
             configManager.reloadConfig("item_prices.yml");
             configManager.reorderItemPrices();
             reloadPrices();
@@ -117,6 +130,7 @@ public class SellManager implements CommandExecutor {
             e.printStackTrace();
         }
     }
+
 
 
     private void toggleAutoSell(Player player) {

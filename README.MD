@@ -35,7 +35,7 @@ Useful features for Minecraft Prison Servers & Then Some :P
 
 
 ## Features
-![NVus Prison Lite Info](https://git.fngnation.net/never2nv/NVus_Prison/raw/branch/main/assets/plugin_info_1.png)
+![NVus Prison Lite Info](https://git.fngnation.net/never2nv/NVus_Prison/raw/branch/main/assets/plugin_info.png)
 ![NVus Prison Lite Info 2](https://git.fngnation.net/never2nv/NVus_Prison/raw/branch/main/assets/plugin_info_2.png)
 ![NVus Prison Lite Info 3](https://git.fngnation.net/never2nv/NVus_Prison/raw/branch/main/assets/plugin_info_3.png)
 

@@ -30,6 +30,8 @@ public class PlayerSpawn implements Listener {
         if (joinedPlayer.hasPermission("nvus.prisoner") && configManager.getConfig("config.yml").getBoolean("PrisonerArmor", true)) {
             equipPrisonerArmor(joinedPlayer);
         }
+
+
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

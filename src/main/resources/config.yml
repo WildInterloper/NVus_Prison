@@ -65,6 +65,14 @@ ToolDamage: false
 TreeFarm: true
 
 ########################################################################################
+#                                 PRISONER RANKS FEATURE                               #
+########################################################################################
+
+# Do you want to use the built-in /rankup and /maxrankup commands to rank prisoners up?
+# Can configure the ranks in the ranks.yml file!
+PrisonerRanks: true
+
+########################################################################################
 #                                   DATABASE SETTINGS                                  #
 ########################################################################################
 

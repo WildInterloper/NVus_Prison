@@ -60,6 +60,16 @@ commands:
     usage: |
       /setprice <price> - Set the price of the block being held in item_prices.yml.
     aliases: [ setblockprice ]
+  rankup:
+    description: Rank up to the next rank.
+    usage: |
+      /rankup - Rank up to the next rank.
+    aliases: [ nextrank ]
+  ranks:
+    description: Display all available ranks, their cost and your current rank and balance.
+    usage: |
+      /ranks - Rank up to the max rank.
+    aliases: [ allranks ]
 
 permissions:
   nvus.admin:

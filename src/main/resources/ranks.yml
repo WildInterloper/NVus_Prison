@@ -1,0 +1,16 @@
+#======================================================================================#
+#                             NVus PRISON GOLD EDITION                                 #
+#                                   by never2nv                                        #
+#                                www.FNGnation.net                                     #
+#                          Discord: FNGnation.net/discord                              #
+#======================================================================================#
+Ranks:
+  Default: # DO NOT CHANGE THE NAME 'Default' or this will break the plugin! This is the first/default rank!
+    Cost: 100
+    Commands:
+      - broadcast %player% has been processed as a new inmate!
+  Tier2:
+    Cost: 200
+    Commands:
+      - broadcast %player% has been promoted to Tier 2!
+      - lp user %player% permission set nvus.gang.create true

@@ -10,6 +10,9 @@ import me.nvus.nvus_prison_setup.Listeners.PlayerSpawn;
 import me.nvus.nvus_prison_setup.Listeners.BlockListener;
 import me.nvus.nvus_prison_setup.Listeners.ToolSwitchListener;
 import me.nvus.nvus_prison_setup.Placeholders.GangPlaceholders;
+import me.nvus.nvus_prison_setup.Ranks.RankCommands;
+import me.nvus.nvus_prison_setup.Ranks.RankListener;
+import me.nvus.nvus_prison_setup.Ranks.RankManager;
 import me.nvus.nvus_prison_setup.Updater.UpdateChecker;
 import me.nvus.nvus_prison_setup.Listeners.ToolDamageListener;
 import me.nvus.nvus_prison_setup.TreeFarm.TreeFarmListener;
@@ -42,7 +45,9 @@ public final class PrisonSetup extends JavaPlugin {
 
     private ConfigManager configManager;
     private DatabaseManager dbManager;
-    private GangManager gangManager; // Added reference to GangManager
+    private GangManager gangManager;
+
+    private RankManager rankManager;
 
     private static Economy econ = null; // Vault / Economy
 
@@ -52,8 +57,15 @@ public final class PrisonSetup extends JavaPlugin {
         // Initialize the ConfigManager
         configManager = new ConfigManager(this);
 
+        // Save the default configs, if they don't exist
+        configManager.saveDefaultConfig("config.yml");
+        configManager.saveDefaultConfig("banned_items.yml");
+        configManager.saveDefaultConfig("auto_switch.yml");
+        configManager.saveDefaultConfig("item_prices.yml");
+        configManager.saveDefaultConfig("ranks.yml");
+
         // Initialize the DatabaseManager with ConfigManager
-        dbManager = new DatabaseManager(configManager); // Correctly assign to the class field
+        dbManager = new DatabaseManager(configManager); // Correctly assign to the configManager
 
         // Initialize the GangManager with the DatabaseManager
         gangManager = new GangManager(dbManager); // Use the corrected dbManager
@@ -67,11 +79,6 @@ public final class PrisonSetup extends JavaPlugin {
             getLogger().info("SQLite database already exists.");
         }
 
-        // Save the default configs, if they don't exist
-        configManager.saveDefaultConfig("config.yml");
-        configManager.saveDefaultConfig("banned_items.yml");
-        configManager.saveDefaultConfig("auto_switch.yml");
-        configManager.saveDefaultConfig("item_prices.yml");
 
         configManager.loadItemPricesConfig(this.getDataFolder());
 
@@ -130,8 +137,23 @@ public final class PrisonSetup extends JavaPlugin {
             getServer().getPluginManager().registerEvents(new TreeFarmListener(this), this);
         }
 
+        // Ranks Manager
+        boolean prisonerRanksEnabled = configManager.getConfig("config.yml").getBoolean("PrisonerRanks", true);
+        if (prisonerRanksEnabled) {
+            // Initialize RankManager and other initializations
+            rankManager = new RankManager(this);
+
+            // Register RankListener
+            getServer().getPluginManager().registerEvents(new RankListener(rankManager), this);
+
+            // Register commands
+            this.getCommand("rankup").setExecutor(new RankCommands(this));
+            this.getCommand("ranks").setExecutor(new RankCommands(this));
+        }
+
         // Successful Startup/Enable
         getLogger().info(ChatColor.translateAlternateColorCodes('&',"&a&lNVus Prison Setup has been successfully enabled!"));
+
 
         // UPDATE CHECKER
         new UpdateChecker(this, 12345).getVersion(version -> {
@@ -192,6 +214,10 @@ public final class PrisonSetup extends JavaPlugin {
 
     public static Economy getEconomy() {
         return econ;
+    }
+
+    public RankManager getRankManager() {
+        return rankManager;
     }
 
     public ConfigManager getConfigManager() {

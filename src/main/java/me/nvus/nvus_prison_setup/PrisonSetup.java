@@ -9,7 +9,6 @@ import me.nvus.nvus_prison_setup.Listeners.PlayerItems;
 import me.nvus.nvus_prison_setup.Listeners.PlayerSpawn;
 import me.nvus.nvus_prison_setup.Listeners.BlockListener;
 import me.nvus.nvus_prison_setup.Listeners.ToolSwitchListener;
-import me.nvus.nvus_prison_setup.Placeholders.GangPlaceholders;
 import me.nvus.nvus_prison_setup.Ranks.RankCommands;
 import me.nvus.nvus_prison_setup.Ranks.RankListener;
 import me.nvus.nvus_prison_setup.Ranks.RankManager;
@@ -20,6 +19,8 @@ import me.nvus.nvus_prison_setup.AutoSell.SellManager;
 import me.nvus.nvus_prison_setup.AutoSell.Listeners.AutoSellListener;
 import me.nvus.nvus_prison_setup.Kit.Listeners.KitListener;
 import me.nvus.nvus_prison_setup.Listeners.CommandListener;
+// Placeholders
+import me.nvus.nvus_prison_setup.Placeholders.CombinedPlaceholders;
 // Database
 import me.nvus.nvus_prison_setup.Database.DatabaseManager;
 // Gangs
@@ -106,7 +107,7 @@ public final class PrisonSetup extends JavaPlugin {
         this.getCommand("gang").setExecutor(new GangCommands(dbManager)); // Now correctly using initialized dbManager
         // Register the Gangs placeholder expansion
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            new GangPlaceholders(gangManager).register();
+            new CombinedPlaceholders(gangManager, rankManager).register();
         }
 
 
@@ -153,6 +154,10 @@ public final class PrisonSetup extends JavaPlugin {
 
             // Register RankListener
             getServer().getPluginManager().registerEvents(new RankListener(rankManager), this);
+
+            // Handled after checking if server has PlaceholderAPI installed or not.
+            // Combined Gang and Rank placeholders into one file now!
+//            new RankPlaceholders(rankManager).register();
 
             // Register commands
             this.getCommand("rankup").setExecutor(new RankCommands(this));

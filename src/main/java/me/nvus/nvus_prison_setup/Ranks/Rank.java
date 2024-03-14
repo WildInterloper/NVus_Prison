@@ -26,5 +26,10 @@ public class Rank {
         return commands;
     }
 
-    // Setters and other methods as necessary
+    // Additional method to get commands as a single string, separated by a semicolon
+    public String getCommandsString() {
+        return String.join(";", this.commands);
+    }
+
+    // Add any additional methods or modifications here
 }

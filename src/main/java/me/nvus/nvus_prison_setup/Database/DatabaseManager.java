@@ -6,10 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.io.File;
 
 import me.nvus.nvus_prison_setup.Gangs.GangInfo;
@@ -120,9 +117,10 @@ public class DatabaseManager {
 
     public void syncRanks() {
         FileConfiguration ranksConfig = configManager.getConfig("ranks.yml");
-        // Assuming you've moved loadRanksFromConfig method logic directly here or keep it separated as below
         loadRanksFromConfig(ranksConfig);
     }
+
+
 
     private void upsertRankInDatabase(String rankName, double cost, String commandsAsString) {
         // This method will check if the rank exists and update or insert accordingly
@@ -162,7 +160,8 @@ public class DatabaseManager {
         initializeRanksDatabase();
 
         // Load ranks from the ranks.yml config and sync them with the database
-        syncRanks();
+        //syncRanks();
+        syncRanksFromFileToDatabase();
     }
 
 
@@ -348,6 +347,64 @@ public class DatabaseManager {
     }
 
 
+//////////////////////////////// SYNC DATABASE STUFF FOR RANKS /////////////////////////////////////////
+
+    public void syncRanksFromFileToDatabase() {
+
+        // Load ranks from ranks.yml
+        Map<String, Rank> fileRanks = newLoadRanksFromConfig();
+
+        // Get current ranks from the database
+        Set<String> databaseRankNames = getCurrentRankNamesFromDatabase();
+
+        // Upsert ranks from the file into the database
+        for (Map.Entry<String, Rank> entry : fileRanks.entrySet()) {
+            String rankName = entry.getKey();
+            Rank rank = entry.getValue();
+
+            upsertRankInDatabase(rankName, rank.getCost(), rank.getCommandsString());
+
+            // Remove processed rank from databaseRankNames to track unmatched ranks
+            databaseRankNames.remove(rankName);
+        }
+
+        // At this point, databaseRankNames contains only ranks that were not in the ranks.yml file
+        // Delete these unmatched ranks from the database
+        for (String oldRankName : databaseRankNames) {
+            deleteRankFromDatabase(oldRankName);
+        }
+    }
+
+    private Set<String> getCurrentRankNamesFromDatabase() {
+        Set<String> rankNames = new HashSet<>();
+        String query = "SELECT rank_name FROM nvus_ranks";
+        try (Connection conn = this.connect(); // Make sure to implement this.connect() method to get your DB connection
+             PreparedStatement pstmt = conn.prepareStatement(query);
+             ResultSet rs = pstmt.executeQuery()) {
+            while (rs.next()) {
+                rankNames.add(rs.getString("rank_name"));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error fetching current rank names from database: " + e.getMessage());
+        }
+        return rankNames;
+    }
+
+    private void deleteRankFromDatabase(String rankName) {
+        String query = "DELETE FROM nvus_ranks WHERE rank_name = ?";
+        try (Connection conn = this.connect(); // Implement this.connect() method to get your DB connection
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setString(1, rankName);
+            int affectedRows = pstmt.executeUpdate();
+            if (affectedRows > 0) {
+                System.out.println("Successfully deleted rank: " + rankName);
+            } else {
+                System.out.println("No rank found with the name: " + rankName + " to delete.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error deleting rank from database: " + e.getMessage());
+        }
+    }
 
 
 
@@ -418,6 +475,23 @@ public class DatabaseManager {
             System.out.println("Error creating gang and adding owner as member: " + e.getMessage());
         }
     }
+
+    public Map<String, Rank> newLoadRanksFromConfig() {
+        Map<String, Rank> fileRanks = new HashMap<>();
+        FileConfiguration ranksConfig = configManager.getConfig("ranks.yml");
+        ConfigurationSection ranksSection = ranksConfig.getConfigurationSection("Ranks");
+        if (ranksSection != null) {
+            for (String rankKey : ranksSection.getKeys(false)) {
+                String rankName = rankKey;
+                double cost = ranksSection.getDouble(rankKey + ".Cost");
+                List<String> commandsList = ranksSection.getStringList(rankKey + ".Commands");
+                Rank rank = new Rank(rankName, cost, commandsList);
+                fileRanks.put(rankName, rank);
+            }
+        }
+        return fileRanks;
+    }
+
 
 
 

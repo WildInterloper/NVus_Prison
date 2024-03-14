@@ -30,7 +30,7 @@ public class PlayerItems implements Listener {
         if (item != null && isBannedItem(item.getType())) {
             if (player.hasPermission("nvus.prisoner")) {
                 event.setCancelled(true);
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&c&lSorry inmate! &cYou're a &6&lprisoner &cand cannot use this tool!"));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&c&lPer The Warden: &6You cannot use this tool!"));
             }
         }
     }
@@ -47,7 +47,7 @@ public class PlayerItems implements Listener {
             if (player.hasPermission("nvus.prisoner")) {
                 // Cancel the event to prevent interaction with banned items
                 event.setCancelled(true);
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&c&lSorry inmate! &cYou're a &6&lprisoner &cand cannot use this tool!"));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&c&lPer The Warden: &6You cannot use this tool!"));
             }
         }
     }

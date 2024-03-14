@@ -97,7 +97,7 @@ public class PlayerSpawn implements Listener {
         player.getInventory().setLeggings(leatherLeggingsPrison);
         player.getInventory().setBoots(leatherBootsPrison);
 
-        player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lYou're a prisoner! &6You've been given the default prisoner armor!"));
+        player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lPer The Warden: &6You've been given the default prisoner armor!"));
     }
 
 

@@ -56,6 +56,49 @@ PrisonerTools:
 ToolDamage: false
 
 ########################################################################################
+#                                PRISONER KIT SETTINGS                                 #
+########################################################################################
+
+# Should players spawn with a prisoner kit when they join the server or respawn?
+PrisonerKit: True
+# If PrisonerKit above is true: What items should be in the prisoner kit?
+PrisonerKitItems:
+  - item: IRON_PICKAXE
+    lore:
+      - "&7Standard issue"
+      - "&7Prisoner's Pickaxe"
+    slot: 0
+    enchantments:
+      - EFFICIENCY:3
+      - UNBREAKING:2
+  - item: IRON_AXE
+    lore:
+      - "&7Standard issue"
+      - "&7Prisoner's Axe"
+    slot: 1
+    enchantments:
+      - SHARPNESS:2
+  - item: IRON_SHOVEL
+    lore:
+      - "&7Standard issue"
+      - "&7Prisoner's Shovel"
+    slot: 2
+    enchantments:
+      - SILK_TOUCH:1
+  - item: IRON_SWORD
+    lore:
+      - "&7Standard issue"
+      - "&7Prisoner's Sword"
+    slot: 3
+    enchantments:
+      - DAMAGE_ALL:3
+# Should players be able to drop their prisoner kit items?
+RestrictKitDrop: True
+# Should prisoners be able to move their prisoner kit items around in their inventory?
+RestrictKitMove: True
+
+
+########################################################################################
 #                                   TREE FARM FEATURE                                  #
 ########################################################################################
 

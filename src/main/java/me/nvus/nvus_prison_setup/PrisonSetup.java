@@ -1,7 +1,7 @@
 package me.nvus.nvus_prison_setup;
 
 import me.nvus.nvus_prison_setup.Configs.ConfigManager;
-import me.nvus.nvus_prison_setup.Listeners.CommandListener;
+import me.nvus.nvus_prison_setup.Kit.KitManager;
 import me.nvus.nvus_prison_setup.Configs.SettingsMenu;
 // Listeners
 import me.nvus.nvus_prison_setup.Listeners.PlayerArmor;
@@ -18,6 +18,8 @@ import me.nvus.nvus_prison_setup.Listeners.ToolDamageListener;
 import me.nvus.nvus_prison_setup.TreeFarm.TreeFarmListener;
 import me.nvus.nvus_prison_setup.AutoSell.SellManager;
 import me.nvus.nvus_prison_setup.AutoSell.Listeners.AutoSellListener;
+import me.nvus.nvus_prison_setup.Kit.Listeners.KitListener;
+import me.nvus.nvus_prison_setup.Listeners.CommandListener;
 // Database
 import me.nvus.nvus_prison_setup.Database.DatabaseManager;
 // Gangs
@@ -154,6 +156,14 @@ public final class PrisonSetup extends JavaPlugin {
             this.getCommand("rankup").setExecutor(new RankCommands(this));
             this.getCommand("ranks").setExecutor(new RankCommands(this));
 
+        }
+
+        // Prisoner Kits
+        boolean prisonerKitEnabled = configManager.getConfig("config.yml").getBoolean("PrisonerKit", true);
+        if (prisonerRanksEnabled) {
+            KitManager kitManager = new KitManager(configManager);
+            KitListener kitListener = new KitListener(configManager, kitManager);
+            getServer().getPluginManager().registerEvents(kitListener, this);
         }
 
         // Successful Startup/Enable

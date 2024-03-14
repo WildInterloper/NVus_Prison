@@ -33,7 +33,7 @@ public class PlayerArmor implements Listener {
                     createArmor(Material.LEATHER_CHESTPLATE, "Prisoner Chestplate"),
                     createArmor(Material.LEATHER_HELMET, "Prisoner Helmet")
             });
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lYou have been equipped with prisoner armor!"));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cPer The Warden: &6&lYou have been equipped with standard issue prisoner armor!"));
         }
     }
 
@@ -49,7 +49,7 @@ public class PlayerArmor implements Listener {
                 boolean restrictArmor = configManager.getConfig("config.yml").getBoolean("RestrictArmor");
                 if (restrictArmor) {
                     event.setCancelled(true);
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lSorry inmate! &cYou're a &6&lprisoner &cand cannot change your armor!"));
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lPer The Warden: &c You cannot change your armor!"));
                 }
                 // If restrictArmor is false, allows the player to change armor freely.
             }

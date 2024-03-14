@@ -80,7 +80,7 @@ public class BlockListener implements Listener {
                 } else {
                     // Inventory is full, drop the item on the ground
                     block.getWorld().dropItemNaturally(block.getLocation(), drop);
-                    player.sendMessage("Your inventory is currently full. The resource has been dropped on the ground!");
+                    player.sendMessage("Your inventory is currently full! The resource has been dropped on the ground!");
                 }
             }
         }

@@ -26,6 +26,5 @@ public class PlayerRankData {
         return rankName;
     }
 
-
 }
 

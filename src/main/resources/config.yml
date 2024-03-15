@@ -64,35 +64,35 @@ PrisonerKit: True
 # If PrisonerKit above is true: What items should be in the prisoner kit?
 PrisonerKitItems:
   - item: IRON_SWORD
-    name: "&7Prisoner's Sword"
+    name: "&7Prisoner Sword"
     lore:
       - "&7Standard issue"
-      - "&7Prisoner's Sword"
+      - "&7Prisoner Sword"
     slot: 0
     enchantments:
       DAMAGE_ALL: 3
   - item: IRON_PICKAXE
-    name: "&7Prisoner's Pickaxe"
+    name: "&7Prisoner Pickaxe"
     lore:
       - "&7Standard issue"
-      - "&7Prisoner's Pickaxe"
+      - "&7Prisoner Pickaxe"
     slot: 1
     enchantments:
       EFFICIENCY: 3
       UNBREAKING: 2
   - item: IRON_AXE
-    name: "&7Prisoner's Axe"
+    name: "&7Prisoner Axe"
     lore:
       - "&7Standard issue"
-      - "&7Prisoner's Axe"
+      - "&7Prisoner Axe"
     slot: 2
     enchantments:
       SHARPNESS: 2
   - item: IRON_SHOVEL
-    name: "&7Prisoner's Shovel"
+    name: "&7Prisoner Shovel"
     lore:
       - "&7Standard issue"
-      - "&7Prisoner's Shovel"
+      - "&7Prisoner Shovel"
     slot: 3
     enchantments:
       SILK_TOUCH: 1

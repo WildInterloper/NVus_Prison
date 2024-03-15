@@ -183,14 +183,14 @@ public final class PrisonSetup extends JavaPlugin {
 
 
         // UPDATE CHECKER
-        new UpdateChecker(this, 12345).getVersion(version -> {
+        new UpdateChecker(this, 115658).getVersion(version -> {
             if (!this.getDescription().getVersion().equals(version)) {
                 getLogger().info("  ");
                 getLogger().info("=====================================================");
                 getLogger().info("  ");
-                getLogger().info("An update for NVus Prison Lite is available! Grab it from:");
-                getLogger().info("SpigotMC: https://www.spigotmc.org/resources/nvus-prison-setup.115441/");
-                getLogger().info("BuiltByBit: https://builtbybit.com/resources/nvus-prison-lite.40514/");
+                getLogger().info("An update for NVus Prison GOLD is available! Grab it from:");
+                getLogger().info("SpigotMC: https://www.spigotmc.org/resources/nvus-prison-gold.115658/");
+                getLogger().info("BuiltByBit: https://builtbybit.com/resources/nvus-prison-gold.41038/");
                 getLogger().info("  ");
                 getLogger().info("=====================================================");
                 getLogger().info("  ");

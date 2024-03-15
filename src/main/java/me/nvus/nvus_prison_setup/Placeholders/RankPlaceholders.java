@@ -41,7 +41,7 @@ public class RankPlaceholders extends PlaceholderExpansion {
 
             case "rank_next":
                 Rank nextRank = rankManager.getNextRank(player);
-                return nextRank != null ? nextRank.getName() : "Highest Rank";
+                return nextRank != null ? nextRank.getName() : "Max Rank";
 
             case "rank_cost":
                 Rank rankForCost = rankManager.getNextRank(player);

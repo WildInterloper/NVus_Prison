@@ -2,6 +2,7 @@ package me.nvus.nvus_prison_setup.AutoSell;
 
 import me.nvus.nvus_prison_setup.Configs.ConfigManager;
 import me.nvus.nvus_prison_setup.PrisonSetup;
+import me.nvus.nvus_prison_setup.AutoSell.MultiplierManager;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -18,16 +19,37 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.time.LocalDateTime;
+
 
 public class SellManager implements CommandExecutor {
 
     private final HashMap<UUID, Boolean> autoSellStatus = new HashMap<>();
     private final HashMap<Material, Double> prices = new HashMap<>();
-    private final ConfigManager configManager;
 
-    public SellManager(ConfigManager configManager) {
+    private final Map<UUID, MultiplierInfo> playerMultipliers = new ConcurrentHashMap<>();
+    private final ConfigManager configManager;
+    private final MultiplierManager multiplierManager;
+
+    public SellManager(ConfigManager configManager, MultiplierManager multiplierManager) {
         this.configManager = configManager;
+        this.multiplierManager = multiplierManager;
         loadPrices();
+    }
+
+    private static class MultiplierInfo {
+        double multiplier;
+        LocalDateTime expiryTime;
+
+        MultiplierInfo(double multiplier, int durationMinutes) {
+            this.multiplier = multiplier;
+            this.expiryTime = LocalDateTime.now().plusMinutes(durationMinutes);
+        }
+
+        boolean isExpired() {
+            return LocalDateTime.now().isAfter(expiryTime);
+        }
     }
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -35,6 +57,7 @@ public class SellManager implements CommandExecutor {
             sender.sendMessage("Only players can use this command.");
             return true;
         }
+
 
         Player player = (Player) sender;
 
@@ -170,10 +193,19 @@ public class SellManager implements CommandExecutor {
 
     private void giveMoney(Player player, Material material, int quantity, double amount) {
         Economy economy = PrisonSetup.getEconomy();
-        economy.depositPlayer(player, amount);
+        double multiplier = multiplierManager.getPlayerMultiplier(player.getUniqueId());
+        double finalAmount = amount * multiplier; // Apply the multiplier
+        economy.depositPlayer(player, finalAmount);
         player.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                String.format("&a&lSold &d%dx &3%s &a&lfor $%.2f", quantity, material.toString().toLowerCase().replaceAll("_", " "), amount)));
+                String.format("&a&lSold &d%dx &3%s &a&lfor $%.2f", quantity, material.toString().toLowerCase().replaceAll("_", " "), finalAmount)));
     }
+
+//    private void giveMoney(Player player, Material material, int quantity, double amount) {
+//        Economy economy = PrisonSetup.getEconomy();
+//        economy.depositPlayer(player, amount);
+//        player.sendMessage(ChatColor.translateAlternateColorCodes('&',
+//                String.format("&a&lSold &d%dx &3%s &a&lfor $%.2f", quantity, material.toString().toLowerCase().replaceAll("_", " "), amount)));
+//    }
 
 
 

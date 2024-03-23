@@ -33,6 +33,11 @@ SellAll: true
 # You can see material prices in the item_pricing.yml file or in-game using /sellprice <price> with an item in your hand.
 # Only players/prisoners with the permission nvus.prisoner can use the /sellprice command and autosell toggle.
 
+# Should we allow the use of multipliers for selling items? ie 1.5x, 2x etc.
+# These are admin commands that can be used by admins or other plugins like InfiniteVouchers etc. to give players a selling
+# multiplier for a set amount of time. | /multiplier <player> 1.5 15m
+SellMultiplier: True
+
 ########################################################################################
 #                                   ARMOR SETTINGS                                     #
 ########################################################################################

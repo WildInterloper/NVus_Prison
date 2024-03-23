@@ -1,5 +1,6 @@
 package me.nvus.nvus_prison_setup;
 
+import me.nvus.nvus_prison_setup.AutoSell.MultiplierManager;
 import me.nvus.nvus_prison_setup.Configs.ConfigManager;
 import me.nvus.nvus_prison_setup.Kit.KitManager;
 import me.nvus.nvus_prison_setup.Configs.SettingsMenu;
@@ -48,7 +49,9 @@ import java.sql.Statement;
 
 public final class PrisonSetup extends JavaPlugin {
 
+    private static PrisonSetup instance;
     private ConfigManager configManager;
+    private MultiplierManager multiplierManager;
     private DatabaseManager dbManager;
     private GangManager gangManager;
 
@@ -121,8 +124,16 @@ public final class PrisonSetup extends JavaPlugin {
         // Register the Auto Sell and Sell All Listeners
         boolean autoSellEnabled = configManager.getConfig("config.yml").getBoolean("AutoSell", true);
         boolean sellAllEnabled = configManager.getConfig("config.yml").getBoolean("SellAll", true);
-        SellManager sellManager = new SellManager(configManager);
+        boolean sellMultiplierEnabled = configManager.getConfig("config.yml").getBoolean("SellMultiplier", true);
+
+        MultiplierManager multiplierManager = new MultiplierManager(this);
+        SellManager sellManager = new SellManager(configManager,multiplierManager);
+        this.getCommand("multiplier").setExecutor(multiplierManager);
         this.getCommand("setprice").setExecutor(sellManager);
+
+//        if (sellMultiplierEnabled) {
+//            this.getCommand("multiplier").setExecutor(new MultiplierManager(this));
+//        }
 
         // If they are true, register the commands.
         if (autoSellEnabled) {
@@ -263,5 +274,9 @@ public final class PrisonSetup extends JavaPlugin {
 
     public GangManager getGangManager() {
         return gangManager;
+    }
+
+    public static PrisonSetup getInstance() {
+        return instance;
     }
 }

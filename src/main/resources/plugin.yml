@@ -59,6 +59,9 @@ commands:
     usage: |
       /autosell - Toggle auto selling all eligible items in your inventory.
     aliases: [ automaticsell ]
+  multiplier:
+    description: Apply a selling multiplier to a player.
+    usage: /multiplier <player> <multiplier> <duration>
   setprice:
     description: Set the price of the block being held in item_prices.yml. Set the price to 0 to remove it from the list!
     usage: |

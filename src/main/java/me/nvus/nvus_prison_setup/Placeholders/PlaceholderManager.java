@@ -4,6 +4,10 @@ import me.nvus.nvus_prison_setup.Gangs.GangInfo;
 import me.nvus.nvus_prison_setup.Gangs.GangManager;
 import me.nvus.nvus_prison_setup.Ranks.Rank;
 import me.nvus.nvus_prison_setup.Ranks.RankManager;
+
+import java.text.NumberFormat;
+import java.util.Locale;
+
 import org.bukkit.entity.Player;
 
 public class PlaceholderManager {
@@ -39,8 +43,19 @@ public class PlaceholderManager {
         return nextRank != null ? nextRank.getName() : "Max Rank";
     }
 
-    public double getNextRankCost(Player player) {
+    public String getNextRankCost(Player player) {
         Rank nextRank = rankManager.getNextRank(player);
-        return nextRank != null ? nextRank.getCost() : -1;
+        if (nextRank != null) {
+            double cost = nextRank.getCost();
+            // Using the US locale as an example for currency formatting
+            NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.US);
+            return currencyFormat.format(cost);
+        }
+        return "$0.00"; // or however you wish to indicate a null or zero value
     }
+
+//    public double getNextRankCost(Player player) {
+//        Rank nextRank = rankManager.getNextRank(player);
+//        return nextRank != null ? nextRank.getCost() : -1;
+//    }
 }

@@ -9,6 +9,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
+import java.text.DecimalFormat;
+
 
 public class RankManager {
 
@@ -36,7 +38,7 @@ public class RankManager {
     public boolean rankUp(Player player) {
         Rank nextRank = getNextRank(player);
         if (nextRank == null) {
-            player.sendMessage(ChatColor.RED + "You are already at the highest rank!");
+            player.sendMessage(ChatColor.RED + "You are already at the max rank!");
             return false;
         }
 
@@ -46,17 +48,49 @@ public class RankManager {
             if (response.transactionSuccess()) {
                 dbManager.updatePlayerRankData(player, nextRank);
                 executeRankCommands(player, nextRank.getCommands());
-                //player.sendMessage(ChatColor.GREEN + "Congratulations! You've been ranked up to " + nextRank.getName() + ".");
+                // Success message can also be formatted if needed
                 return true;
             } else {
                 player.sendMessage(ChatColor.RED + "Transaction failed: " + response.errorMessage);
                 return false;
             }
         } else {
-            player.sendMessage(ChatColor.RED + "You cannot afford to rank up. You need $" + nextRank.getCost() + ", but you only have $" + balance + ".");
+            DecimalFormat decimalFormat = new DecimalFormat("$###,###,###.00");
+            String formattedCost = decimalFormat.format(nextRank.getCost());
+            String formattedBalance = decimalFormat.format(balance);
+            player.sendMessage(" ");
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lYou cannot afford to rank up!"));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6You need: &c" + formattedCost + "."));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6But you only have: &a" + formattedBalance + "."));
+            player.sendMessage(" ");
             return false;
         }
     }
+
+//    public boolean rankUp(Player player) {
+//        Rank nextRank = getNextRank(player);
+//        if (nextRank == null) {
+//            player.sendMessage(ChatColor.RED + "You are already at the max rank!");
+//            return false;
+//        }
+//
+//        double balance = economy.getBalance(player);
+//        if (balance >= nextRank.getCost()) {
+//            EconomyResponse response = economy.withdrawPlayer(player, nextRank.getCost());
+//            if (response.transactionSuccess()) {
+//                dbManager.updatePlayerRankData(player, nextRank);
+//                executeRankCommands(player, nextRank.getCommands());
+//                //player.sendMessage(ChatColor.GREEN + "Congratulations! You've been ranked up to " + nextRank.getName() + ".");
+//                return true;
+//            } else {
+//                player.sendMessage(ChatColor.RED + "Transaction failed: " + response.errorMessage);
+//                return false;
+//            }
+//        } else {
+//            player.sendMessage(ChatColor.RED + "You cannot afford to rank up. You need $" + nextRank.getCost() + ", but you only have $" + balance + ".");
+//            return false;
+//        }
+//    }
 
     private void executeRankCommands(Player player, List<String> commands) {
         if (commands == null || commands.isEmpty()) return;
@@ -70,16 +104,33 @@ public class RankManager {
         Rank currentRank = getCurrentRank(player);
         // Assuming you have a method to get all ranks sorted by cost
         List<Rank> allRanks = dbManager.getAllRanksSorted();
+        DecimalFormat decimalFormat = new DecimalFormat("$#,###.00");
         for (Rank rank : allRanks) {
             ranksMessage.append(ChatColor.YELLOW).append(rank.getName())
-                    .append(ChatColor.WHITE).append(" - $")
-                    .append(ChatColor.GREEN).append(rank.getCost()).append("\n");
+                    .append(ChatColor.WHITE).append(" - ")
+                    .append(ChatColor.GREEN).append(decimalFormat.format(rank.getCost())).append("\n");
         }
-        ranksMessage.append(ChatColor.GOLD + "\nYour current rank: " + ChatColor.YELLOW + currentRank.getName());
+        ranksMessage.append(ChatColor.GOLD + "\n� Your current rank: " + ChatColor.YELLOW + currentRank.getName());
         double balance = economy.getBalance(player);
-        ranksMessage.append(ChatColor.GOLD + "\nYour balance: " + ChatColor.GREEN + "$" + balance);
+        ranksMessage.append(ChatColor.GOLD + "\n� Your balance: " + ChatColor.GREEN + decimalFormat.format(balance));
         return ranksMessage.toString();
     }
+
+//    public String getRanksDisplay(Player player) {
+//        StringBuilder ranksMessage = new StringBuilder(ChatColor.GOLD + "Available Ranks:\n");
+//        Rank currentRank = getCurrentRank(player);
+//        // Assuming you have a method to get all ranks sorted by cost
+//        List<Rank> allRanks = dbManager.getAllRanksSorted();
+//        for (Rank rank : allRanks) {
+//            ranksMessage.append(ChatColor.YELLOW).append(rank.getName())
+//                    .append(ChatColor.WHITE).append(" - $")
+//                    .append(ChatColor.GREEN).append(rank.getCost()).append("\n");
+//        }
+//        ranksMessage.append(ChatColor.GOLD + "\n� Your current rank: " + ChatColor.YELLOW + currentRank.getName());
+//        double balance = economy.getBalance(player);
+//        ranksMessage.append(ChatColor.GOLD + "\n� Your balance: " + ChatColor.GREEN + "$" + balance);
+//        return ranksMessage.toString();
+//    }
 
 
     public void assignDefaultRank(Player player) {

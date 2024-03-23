@@ -41,13 +41,21 @@ public class SettingsMenu implements Listener {
         inv.setItem(4, createToggleItem(Material.LEVER, "Toggle AutoSwitch", config.getBoolean("AutoSwitch", true)));
         inv.setItem(5, createToggleItem(Material.IRON_PICKAXE, "Toggle ToolDamage", config.getBoolean("ToolDamage", false)));
 
+        inv.setItem(7, createToggleItem(Material.IRON_BARS , "Toggle PrisonerGangs", false));
         inv.setItem(8, createToggleItem(Material.BOOK, "Reload Configs", false));
 
         // Second Row
         inv.setItem(9, createToggleItem(Material.GOLD_INGOT, "Toggle AutoSell", config.getBoolean("AutoSell", true)));
         inv.setItem(10, createToggleItem(Material.GOLD_BLOCK, "Toggle SellAll", config.getBoolean("SellAll", true)));
 
-        inv.setItem(11, createToggleItem(Material.OAK_SAPLING, "Toggle TreeFarm", config.getBoolean("TreeFarm", true)));
+        inv.setItem(12, createToggleItem(Material.OAK_SAPLING, "Toggle TreeFarm", config.getBoolean("TreeFarm", true)));
+        inv.setItem(13, createToggleItem(Material.SUNFLOWER, "Toggle PrisonerRanks", config.getBoolean("PrisonerRanks", true)));
+
+        inv.setItem(15, createToggleItem(Material.IRON_SHOVEL, "Toggle PrisonerKit", config.getBoolean("PrisonerKit", true)));
+        inv.setItem(16, createToggleItem(Material.BARRIER, "Toggle RestrictKitDrop", config.getBoolean("RestrictKitDrop", true)));
+        inv.setItem(17, createToggleItem(Material.BARRIER, "Toggle RestrictKitMove", config.getBoolean("RestrictKitMove", true)));
+
+
 
         player.openInventory(inv);
     }
@@ -102,10 +110,28 @@ public class SettingsMenu implements Listener {
                 toggleConfigOption(player, "AutoSwitch");
             } else if (displayName.contains("Toggle AutoSell")) {
                 toggleConfigOption(player, "AutoSell");
+                player.sendMessage(ChatColor.GREEN + "Requires a server restart to take effect. Or external plugin reload ie PlugManX");
             } else if (displayName.contains("Toggle SellAll")) {
                 toggleConfigOption(player, "SellAll");
+                player.sendMessage(ChatColor.GREEN + "Requires a server restart to take effect. Or external plugin reload ie PlugManX");
             } else if (displayName.contains("Toggle TreeFarm")) {
                 toggleConfigOption(player, "TreeFarm");
+                player.sendMessage(ChatColor.GREEN + "Requires a server restart to take effect. Or external plugin reload ie PlugManX");
+            }  else if (displayName.contains("Toggle PrisonerGangs")) {
+                toggleConfigOption(player, "PrisonerGangs");
+                player.sendMessage(ChatColor.GREEN + "Requires a server restart to take effect. Or external plugin reload ie PlugManX");
+            }
+            else if (displayName.contains("Toggle PrisonerRanks")) {
+                toggleConfigOption(player, "PrisonerRanks");
+                player.sendMessage(ChatColor.GREEN + "Requires a server restart to take effect. Or external plugin reload ie PlugManX");
+            } else if (displayName.contains("Toggle PrisonerKit")) {
+                toggleConfigOption(player, "PrisonerKit");
+            } else if (displayName.contains("Toggle RestrictKitDrop")) {
+                toggleConfigOption(player, "RestrictKitDrop");
+            } else if (displayName.contains("Toggle RestrictKitMove")) {
+                toggleConfigOption(player, "RestrictKitMove");
+            } else if (displayName.contains("Toggle ToolDamage")) {
+                toggleConfigOption(player, "ToolDamage");
             } else if (displayName.contains("Reload Configs")) {
                 reloadConfigs(player);
             }
@@ -139,6 +165,7 @@ public class SettingsMenu implements Listener {
         configManager.reloadConfig("auto_switch.yml");
         configManager.reloadConfig("banned_items.yml");
         configManager.reloadConfig("item_prices.yml");
+        configManager.reloadConfig("ranks.yml");
         //configManager.saveConfig("config.yml");
         player.sendMessage(ChatColor.GREEN + "[NVus Prison] : Configuration files reloaded!");
         player.closeInventory();

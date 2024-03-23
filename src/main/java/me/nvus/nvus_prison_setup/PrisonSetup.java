@@ -92,7 +92,7 @@ public final class PrisonSetup extends JavaPlugin {
 
         // Check if Vault is installed, it's a hard dependency so disable plugin if not installed!
         if (!setupEconomy()) {
-            getLogger().severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
+            getLogger().severe(String.format("[%s] - Disabled! Vault needs to be installed!", getDescription().getName()));
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
@@ -106,13 +106,15 @@ public final class PrisonSetup extends JavaPlugin {
         this.getCommand("nvus").setExecutor(new CommandListener(this, configManager));
 
         // Gang Related... GANG, GANG #LOLOLOLOL
-        this.getCommand("gang").setExecutor(new GangCommands(dbManager)); // Now correctly using initialized dbManager
-        // Register the Gangs placeholder expansion
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-//            PlaceholderManager placeholderManager = new PlaceholderManager(gangManager, rankManager);
-//            new CombinedPlaceholders(placeholderManager).register();
-            new GangPlaceholders(gangManager).register();
+        boolean gangsEnabled = configManager.getConfig("config.yml").getBoolean("PrisonerGangs", true);
+        if (gangsEnabled) {
+            this.getCommand("gang").setExecutor(new GangCommands(dbManager)); // Now correctly using initialized dbManager
+            // Register the Gangs placeholder expansion
+            if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+                new GangPlaceholders(gangManager).register();
+            }
         }
+
 
 
 

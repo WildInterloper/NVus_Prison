@@ -5,6 +5,8 @@ import org.bukkit.entity.Player;
 import me.nvus.nvus_prison_setup.Ranks.RankManager;
 import me.nvus.nvus_prison_setup.Ranks.Rank;
 
+import java.text.DecimalFormat;
+
 public class RankPlaceholders extends PlaceholderExpansion {
 
     private final RankManager rankManager;
@@ -45,7 +47,16 @@ public class RankPlaceholders extends PlaceholderExpansion {
 
             case "rank_cost":
                 Rank rankForCost = rankManager.getNextRank(player);
-                return rankForCost != null ? String.format("$%.2f", rankForCost.getCost()) : "N/A";
+                if (rankForCost != null) {
+                    DecimalFormat decimalFormat = new DecimalFormat("$###,###.00");
+                    return decimalFormat.format(rankForCost.getCost());
+                } else {
+                    return "N/A";
+                }
+
+//            case "rank_cost":
+//                Rank rankForCost = rankManager.getNextRank(player);
+//                return rankForCost != null ? String.format("$%.2f", rankForCost.getCost()) : "N/A";
 
             default:
                 return null;

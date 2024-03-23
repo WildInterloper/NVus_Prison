@@ -36,12 +36,12 @@ public class GangPlaceholders extends PlaceholderExpansion {
 
         String gangName = gangManager.getCurrentGangName(player.getUniqueId());
         if (gangName == null) {
-            return "No Gang";
+            return " ";
         }
 
         GangInfo gangInfo = gangManager.getGangInfo(gangName);
         if (gangInfo == null) {
-            return "Gang information could not be retrieved.";
+            return " ";
         }
 
         switch (identifier) {

@@ -52,6 +52,7 @@ public class PlayerArmor implements Listener {
                     player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lPer The Warden: &c You cannot change your armor!"));
                 }
                 // If restrictArmor is false, allows the player to change armor freely.
+
             }
         }
     }

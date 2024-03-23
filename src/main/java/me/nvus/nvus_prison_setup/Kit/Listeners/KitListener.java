@@ -2,6 +2,7 @@ package me.nvus.nvus_prison_setup.Kit.Listeners;
 
 import me.nvus.nvus_prison_setup.Configs.ConfigManager;
 import me.nvus.nvus_prison_setup.Kit.KitManager;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -91,7 +92,8 @@ public class KitListener implements Listener {
 
         if (kitManager.isPrisonerKitItem(droppedItem)) {
             event.setCancelled(true);
-            player.sendMessage("§c&lPER THE WARDEN: You cannot drop your prisoner kit items!");
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "§c&lPER THE WARDEN: You cannot drop your prisoner kit items!"));
+//            player.sendMessage("§c&lPER THE WARDEN: You cannot drop your prisoner kit items!");
         }
     }
 
@@ -114,7 +116,7 @@ public class KitListener implements Listener {
 
         if (kitManager.isPrisonerKitItem(clickedItem)) {
             event.setCancelled(true);
-            player.sendMessage("§cPER THE WARDEN: You cannot move your prisoner kit items!");
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "§c&lPER THE WARDEN: You cannot move your prisoner kit items!"));
         }
     }
 

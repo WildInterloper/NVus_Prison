@@ -169,7 +169,7 @@ public class SellManager implements CommandExecutor {
     }
 
     public void sellItems(Player player) {
-        if (!player.hasPermission("nvus.prisoner")) {
+        if (!player.hasPermission("nvus.prisoner") || !player.hasPermission("nvus.sellall")) {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lYou do not have permission to use this command."));
             return;
         }

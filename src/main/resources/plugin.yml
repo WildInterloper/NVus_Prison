@@ -88,3 +88,9 @@ permissions:
   nvus.prisoner:
     description: Allows access to NVus Prison prisoner features ie AutoSwitch,AutoSell,Restricting Armor etc.
     default: true
+  nvus.sellall:
+    description: Allows access to /sellall command, independent of nvus.prisoner permission.
+    default: false
+  nvus.autosell:
+    description: Allows access to /autosell command toggle, independent of nvus.prisoner permission.
+    default: false

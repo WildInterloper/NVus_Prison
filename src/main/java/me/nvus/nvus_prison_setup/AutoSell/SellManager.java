@@ -54,44 +54,55 @@ public class SellManager implements CommandExecutor {
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage("Only players can use this command.");
+            sender.sendMessage(ChatColor.RED + "Only players can use this command.");
             return true;
         }
-
 
         Player player = (Player) sender;
 
         // Admin Commands:
-        if ("setprice".equalsIgnoreCase(command.getName())) {
-            if (player.hasPermission("nvus.admin")) {
-                if (args.length != 1) {
-                    player.sendMessage(ChatColor.RED + "Usage: /setprice <price>");
-                    return true;
-                }
-                try {
-                    double price = Double.parseDouble(args[0]);
-                    setPrice(player, price);
-                } catch (NumberFormatException e) {
-                    player.sendMessage(ChatColor.RED + "Please provide a valid price.");
-                }
-            } else {
+        if ("setprice".equalsIgnoreCase(label)) {
+            if (!player.hasPermission("nvus.admin")) {
                 player.sendMessage(ChatColor.RED + "You do not have permission to set prices.");
+                return true;
+            }
+            if (args.length != 1) {
+                player.sendMessage(ChatColor.RED + "Usage: /setprice <price>");
+                return true;
+            }
+            try {
+                double price = Double.parseDouble(args[0]);
+                setPrice(player, price);
+            } catch (NumberFormatException e) {
+                player.sendMessage(ChatColor.RED + "Please provide a valid price.");
             }
             return true;
         }
 
         // Player/Prisoner Commands:
-        switch (command.getName().toLowerCase()) {
+        switch (label.toLowerCase()) {
             case "autosell":
-                toggleAutoSell(player);
+                if (player.hasPermission("nvus.prisoner") || player.hasPermission("nvus.autosell")) {
+                    toggleAutoSell(player);
+                } else {
+                    player.sendMessage(ChatColor.RED + "You do not have permission to use /autosell.");
+                }
                 break;
             case "sellall":
-                sellItems(player);
+                if (player.hasPermission("nvus.prisoner") || player.hasPermission("nvus.sellall")) {
+                    sellItems(player);
+                } else {
+                    player.sendMessage(ChatColor.RED + "You do not have permission to use /sellall.");
+                }
                 break;
+            default:
+                // More commands in future?  xD
+                return false;
         }
 
         return true;
     }
+
 
     private void loadPrices() {
         FileConfiguration itemPricesConfig = configManager.getItemPricesConfig();
@@ -169,10 +180,10 @@ public class SellManager implements CommandExecutor {
     }
 
     public void sellItems(Player player) {
-        if (!player.hasPermission("nvus.prisoner") || !player.hasPermission("nvus.sellall")) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lYou do not have permission to use this command."));
-            return;
-        }
+//        if (player.hasPermission("nvus.prisoner") || player.hasPermission("nvus.sellall")) {
+//            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lYou do not have permission to use this command."));
+//            return;
+//        }
 
         Map<Material, Integer> soldItems = new HashMap<>();
 

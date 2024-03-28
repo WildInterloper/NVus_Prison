@@ -1,7 +1,6 @@
 package me.nvus.nvus_prison_setup.AutoSell.Listeners;
 
 import me.nvus.nvus_prison_setup.AutoSell.SellManager;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
@@ -20,10 +19,10 @@ public class AutoSellListener implements Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
-        if (!player.hasPermission("nvus.prisoner") || !player.hasPermission("nvus.autosell") || !sellManager.isAutoSellEnabled(player)) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lYou do not have permission to use this command."));
-            return;
+        // Added additional permission check
+        if ((sellManager.isAutoSellEnabled(player)) ) {
+            sellManager.sellItems(player);
         }
-        sellManager.sellItems(player);
     }
+
 }

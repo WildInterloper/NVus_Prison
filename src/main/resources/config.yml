@@ -120,7 +120,7 @@ TreeFarm: true
 #                                 PRISONER RANKS FEATURE                               #
 ########################################################################################
 
-# Do you want to use the built-in /rankup and /maxrankup commands to rank prisoners up?
+# Do you want to use the builand ht-in /rankup and /maxrankup commands to rank prisoners up?
 # Can configure the ranks in the ranks.yml file!
 PrisonerRanks: true
 

@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -65,43 +66,124 @@ public class KitManager {
 
             ItemStack item = new ItemStack(material);
             ItemMeta meta = item.getItemMeta();
-
-            // Set the display name if available
+            // Configure item meta (name, lore, enchantments)...
             if (itemSpec.containsKey("name")) {
-                String name = ChatColor.translateAlternateColorCodes('&', (String) itemSpec.get("name"));
-                meta.setDisplayName(name);
+                meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', (String) itemSpec.get("name")));
             }
-
-            // Set lore if available
             if (itemSpec.containsKey("lore")) {
                 List<String> lore = new ArrayList<>();
-                for (String line : (List<String>) itemSpec.get("lore")) {
-                    lore.add(ChatColor.translateAlternateColorCodes('&', line));
-                }
+                ((List<String>) itemSpec.get("lore")).forEach(line -> lore.add(ChatColor.translateAlternateColorCodes('&', line)));
                 meta.setLore(lore);
             }
-
-            // Set enchantments if available
             if (itemSpec.containsKey("enchantments")) {
-                Map<String, Integer> enchantments = (Map<String, Integer>) itemSpec.get("enchantments");
-                for (Map.Entry<String, Integer> enchantmentEntry : enchantments.entrySet()) {
-                    Enchantment enchantment = Enchantment.getByName(enchantmentEntry.getKey());
-                    if (enchantment != null) {
-                        meta.addEnchant(enchantment, enchantmentEntry.getValue(), true);
-                    }
-                }
+                ((Map<String, Integer>) itemSpec.get("enchantments")).forEach((enchant, level) -> meta.addEnchant(Enchantment.getByName(enchant.toUpperCase()), level, true));
             }
-
             item.setItemMeta(meta);
 
-            // Set item in specified quickbar slot, if available
             if (itemSpec.containsKey("slot")) {
-                player.getInventory().setItem((Integer) itemSpec.get("slot"), item);
+                int slot = (Integer) itemSpec.get("slot");
+                ItemStack existingItem = player.getInventory().getItem(slot);
+
+                if (existingItem != null && existingItem.getType() != Material.AIR && !isPrisonerKitItem(existingItem)) {
+                    moveItemToAvailableSlot(player, existingItem);
+                }
+
+                player.getInventory().setItem(slot, item);
             } else {
                 player.getInventory().addItem(item);
             }
         }
     }
+
+    private void moveItemToAvailableSlot(Player player, ItemStack item) {
+        // Attempt to move the existing item to an available slot
+        HashMap<Integer, ItemStack> overflow = player.getInventory().addItem(item);
+        if (!overflow.isEmpty()) {
+            // Check Ender Chest
+            if (player.getEnderChest().firstEmpty() != -1) {
+                player.getEnderChest().addItem(overflow.get(0));
+                player.sendMessage(ChatColor.YELLOW + "Your inventory was full, so an item was moved to your Ender Chest.");
+            } else {
+                // Drop the item at the player's location
+                player.getWorld().dropItemNaturally(player.getLocation(), overflow.get(0));
+                player.sendMessage(ChatColor.RED + "Your inventory and Ender Chest were full, so an item was dropped on the ground.");
+            }
+        }
+    }
+
+
+
+
+
+
+//    public void givePrisonerKit(Player player) {
+//        if (!configManager.getBoolean("config.yml", "PrisonerKit", false)) {
+//            return;
+//        }
+//
+//        FileConfiguration config = configManager.getConfig("config.yml");
+//        List<Map<?, ?>> kitItems = config.getMapList("PrisonerKitItems");
+//
+//        for (Map<?, ?> itemSpec : kitItems) {
+//            Material material = Material.matchMaterial((String) itemSpec.get("item"));
+//            if (material == null) continue;
+//
+//            ItemStack item = new ItemStack(material);
+//            ItemMeta meta = item.getItemMeta();
+//
+//            // Configure item meta (name, lore, enchantments)...
+//            // This part remains the same as in your original method
+//
+//            item.setItemMeta(meta);
+//
+//            // Attempt to set the item in the specified slot
+//            if (itemSpec.containsKey("slot")) {
+//                int slot = (Integer) itemSpec.get("slot");
+//                ItemStack existingItem = player.getInventory().getItem(slot);
+//
+//                // If the slot is occupied, try to find a new place for the existing item
+//                if (existingItem != null && existingItem.getType() != Material.AIR) {
+//                    HashMap<Integer, ItemStack> failedItems = player.getInventory().addItem(existingItem);
+//
+//                    // If inventory is full, try ender chest or drop to the ground
+//                    if (!failedItems.isEmpty()) {
+//                        failedItems.forEach((integer, itemStack) -> {
+//                            if (player.getEnderChest().firstEmpty() != -1) {
+//                                player.getEnderChest().addItem(itemStack);
+//                                player.sendMessage(ChatColor.YELLOW + "Some items were moved to your Ender Chest due to a full inventory.");
+//                            } else {
+//                                player.getWorld().dropItemNaturally(player.getLocation(), itemStack);
+//                                player.sendMessage(ChatColor.RED + "Your inventory and Ender Chest are full. Some items were dropped on the ground.");
+//                            }
+//                        });
+//                    }
+//
+//                    // Now we can safely place the kit item in the intended slot
+//                    player.getInventory().setItem(slot, item);
+//                } else {
+//                    // Slot is empty, just place the item there
+//                    player.getInventory().setItem(slot, item);
+//                }
+//            } else {
+//                // No specific slot defined, just add to inventory
+//                HashMap<Integer, ItemStack> failedItems = player.getInventory().addItem(item);
+//
+//                // Handle full inventory as above
+//                if (!failedItems.isEmpty()) {
+//                    failedItems.forEach((integer, itemStack) -> {
+//                        if (player.getEnderChest().firstEmpty() != -1) {
+//                            player.getEnderChest().addItem(itemStack);
+//                            player.sendMessage(ChatColor.YELLOW + "Some items were moved to your Ender Chest due to a full inventory.");
+//                        } else {
+//                            player.getWorld().dropItemNaturally(player.getLocation(), itemStack);
+//                            player.sendMessage(ChatColor.RED + "Your inventory and Ender Chest are full. Some items were dropped on the ground.");
+//                        }
+//                    });
+//                }
+//            }
+//        }
+//    }
+
 
 
 

@@ -12,7 +12,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+
+import java.util.HashMap;
 
 public class PlayerSpawn implements Listener {
     private final ConfigManager configManager;
@@ -55,50 +58,71 @@ public class PlayerSpawn implements Listener {
     }
 
     private void equipPrisonerArmor(Player player) {
-        // Create Prisoner Helmet
-        ItemStack leatherHelmetPrison = new ItemStack(Material.LEATHER_HELMET);
-        LeatherArmorMeta helmetMeta = (LeatherArmorMeta) leatherHelmetPrison.getItemMeta();
-        if (helmetMeta != null) {
-            helmetMeta.setColor(Color.ORANGE);
-            helmetMeta.setDisplayName(ChatColor.GOLD + "Prisoner Helmet");
-            leatherHelmetPrison.setItemMeta(helmetMeta);
-        }
+        handleNonPrisonerArmorItems(player); // Ensure non-prisoner armor is handled before equipping new armor
 
-        // Create Prisoner Chestplate
-        ItemStack leatherChestplatePrison = new ItemStack(Material.LEATHER_CHESTPLATE);
-        LeatherArmorMeta chestplateMeta = (LeatherArmorMeta) leatherChestplatePrison.getItemMeta();
-        if (chestplateMeta != null) {
-            chestplateMeta.setColor(Color.ORANGE);
-            chestplateMeta.setDisplayName(ChatColor.GOLD + "Prisoner Chestplate");
-            leatherChestplatePrison.setItemMeta(chestplateMeta);
-        }
+        // Define and equip standard prisoner armor
+        ItemStack[] standardPrisonerArmor = new ItemStack[]{
+                createArmor(Material.LEATHER_BOOTS, "Prisoner Boots"),
+                createArmor(Material.LEATHER_LEGGINGS, "Prisoner Leggings"),
+                createArmor(Material.LEATHER_CHESTPLATE, "Prisoner Chestplate"),
+                createArmor(Material.LEATHER_HELMET, "Prisoner Helmet")
+        };
 
-        // Create Prisoner Leggings
-        ItemStack leatherLeggingsPrison = new ItemStack(Material.LEATHER_LEGGINGS);
-        LeatherArmorMeta leggingsMeta = (LeatherArmorMeta) leatherLeggingsPrison.getItemMeta();
-        if (leggingsMeta != null) {
-            leggingsMeta.setColor(Color.ORANGE);
-            leggingsMeta.setDisplayName(ChatColor.GOLD + "Prisoner Leggings");
-            leatherLeggingsPrison.setItemMeta(leggingsMeta);
-        }
-
-        // Create Prisoner Boots
-        ItemStack leatherBootsPrison = new ItemStack(Material.LEATHER_BOOTS);
-        LeatherArmorMeta bootsMeta = (LeatherArmorMeta) leatherBootsPrison.getItemMeta();
-        if (bootsMeta != null) {
-            bootsMeta.setColor(Color.ORANGE);
-            bootsMeta.setDisplayName(ChatColor.GOLD + "Prisoner Boots");
-            leatherBootsPrison.setItemMeta(bootsMeta);
-        }
-
-        // Equip Prisoner Armor
-        player.getInventory().setHelmet(leatherHelmetPrison);
-        player.getInventory().setChestplate(leatherChestplatePrison);
-        player.getInventory().setLeggings(leatherLeggingsPrison);
-        player.getInventory().setBoots(leatherBootsPrison);
-
-        player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lPer The Warden: &6You've been given the default prisoner armor!"));
+        player.getInventory().setArmorContents(standardPrisonerArmor);
+        player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cPer The Warden: &6&lYou have been equipped with standard issue prisoner armor!"));
     }
+
+    private ItemStack createArmor(Material material, String name) {
+        ItemStack item = new ItemStack(material);
+        LeatherArmorMeta meta = (LeatherArmorMeta) item.getItemMeta();
+        if (meta != null) {
+            meta.setDisplayName(name);
+            meta.setColor(Color.ORANGE); // Set the color for leather armor
+            item.setItemMeta(meta);
+        }
+        return item;
+    }
+
+    private void handleNonPrisonerArmorItems(Player player) {
+        ItemStack[] armorContents = player.getInventory().getArmorContents();
+
+        for (int i = 0; i < armorContents.length; i++) {
+            ItemStack armorPiece = armorContents[i];
+            // Check if the armor piece is not part of the prisoner kit
+            if (armorPiece != null && armorPiece.getType() != Material.AIR && !isPrisonerArmorItem(armorPiece)) {
+                moveArmorToAvailableSlot(player, armorPiece);
+                armorContents[i] = new ItemStack(Material.AIR); // Remove the non-prisoner armor from the armor slot
+            }
+        }
+
+        // Update the player's armor contents after removals
+        player.getInventory().setArmorContents(armorContents);
+    }
+
+    private boolean isPrisonerArmorItem(ItemStack item) {
+        if (item == null || !item.hasItemMeta()) return false;
+        ItemMeta meta = item.getItemMeta();
+        String itemName = meta.getDisplayName();
+        // Adjust the check based on your naming convention for prisoner armor
+        return itemName != null && itemName.contains("Prisoner");
+    }
+
+    private void moveArmorToAvailableSlot(Player player, ItemStack armorPiece) {
+        // Attempt to move the existing armor piece to an available slot
+        HashMap<Integer, ItemStack> overflow = player.getInventory().addItem(armorPiece);
+        if (!overflow.isEmpty()) {
+            // Check Ender Chest
+            if (player.getEnderChest().firstEmpty() != -1) {
+                player.getEnderChest().addItem(overflow.get(0));
+                player.sendMessage(ChatColor.YELLOW + "Your inventory was full, so your armor was moved to your Ender Chest.");
+            } else {
+                // Drop the item at the player's location
+                player.getWorld().dropItemNaturally(player.getLocation(), overflow.get(0));
+                player.sendMessage(ChatColor.RED + "Your inventory and Ender Chest were full, so your armor was dropped on the ground.");
+            }
+        }
+    }
+
 
 
     // Destroy armor upon death etc.
